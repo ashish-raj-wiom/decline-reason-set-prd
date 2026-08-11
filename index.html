@@ -5,93 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Decline &amp; Install-Failure Reason Set — PRD (Draft)</title>
 <style>
-  :root{
-    color-scheme: light;
-    --plane:#f5f5f2; --surface:#fffffe; --raise:#fbfbf9;
-    --ink:#16171c; --ink2:#44454c; --muted:#83848b;
-    --line:#e6e5df; --hair:rgba(20,21,26,.09);
-    --accent:#4f46e5; --accent-ink:#4338ca; --accent-wash:rgba(79,70,229,.07);
-    --amber:#b25e00; --amber-bg:rgba(224,140,20,.13);
-    --code:#ecebe6;
-  }
-  @media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){
-    color-scheme:dark;
-    --plane:#0e0f11; --surface:#191a1d; --raise:#1f2023;
-    --ink:#f1f2f3; --ink2:#c2c6cc; --muted:#8b9096;
-    --line:#2b2c2f; --hair:rgba(255,255,255,.10);
-    --accent:#8b83f0; --accent-ink:#a79ff5; --accent-wash:rgba(120,110,235,.14);
-    --amber:#f0b055; --amber-bg:rgba(224,140,20,.16);
-    --code:#26272a;
-  }}
-  :root[data-theme="dark"]{
-    color-scheme:dark;
-    --plane:#0e0f11; --surface:#191a1d; --raise:#1f2023;
-    --ink:#f1f2f3; --ink2:#c2c6cc; --muted:#8b9096;
-    --line:#2b2c2f; --hair:rgba(255,255,255,.10);
-    --accent:#8b83f0; --accent-ink:#a79ff5; --accent-wash:rgba(120,110,235,.14);
-    --amber:#f0b055; --amber-bg:rgba(224,140,20,.16);
-    --code:#26272a;
-  }
-  :root[data-theme="light"]{
-    color-scheme:light;
-    --plane:#f5f5f2; --surface:#fffffe; --raise:#fbfbf9;
-    --ink:#16171c; --ink2:#44454c; --muted:#83848b;
-    --line:#e6e5df; --hair:rgba(20,21,26,.09);
-    --accent:#4f46e5; --accent-ink:#4338ca; --accent-wash:rgba(79,70,229,.07);
-    --amber:#b25e00; --amber-bg:rgba(224,140,20,.13);
-    --code:#ecebe6;
-  }
-
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{margin:0; background:var(--plane); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:15.5px; line-height:1.62; -webkit-font-smoothing:antialiased}
-  .wrap{max-width:920px; margin:0 auto; padding:0 26px}
-
-  .topbar{background:var(--surface); border-bottom:1px solid var(--line); padding:16px 0}
-  .topbar .row{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
-  .topbar .eyebrow{font-size:11px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--accent-ink)}
-  .topbar .badge{font-size:11px; font-weight:700; letter-spacing:.03em; padding:2px 9px; border-radius:20px; background:var(--amber-bg); color:var(--amber)}
-  .topbar a{color:var(--accent-ink); font-size:13px; text-decoration:none; margin-left:auto}
-  .topbar a:hover{text-decoration:underline}
-  .theme-toggle{appearance:none; border:1px solid var(--hair); background:var(--surface); color:var(--ink2); width:34px;height:34px;border-radius:9px; cursor:pointer; font-size:15px}
-
+  :root{color-scheme:light;--plane:#f5f5f2;--surface:#fffffe;--raise:#fbfbf9;--ink:#16171c;--ink2:#44454c;--muted:#83848b;--line:#e6e5df;--hair:rgba(20,21,26,.09);--accent:#4f46e5;--accent-ink:#4338ca;--accent-wash:rgba(79,70,229,.07);--amber:#b25e00;--amber-bg:rgba(224,140,20,.13);--code:#ecebe6}
+  @media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){color-scheme:dark;--plane:#0e0f11;--surface:#191a1d;--raise:#1f2023;--ink:#f1f2f3;--ink2:#c2c6cc;--muted:#8b9096;--line:#2b2c2f;--hair:rgba(255,255,255,.10);--accent:#8b83f0;--accent-ink:#a79ff5;--accent-wash:rgba(120,110,235,.14);--amber:#f0b055;--amber-bg:rgba(224,140,20,.16);--code:#26272a}}
+  :root[data-theme="dark"]{color-scheme:dark;--plane:#0e0f11;--surface:#191a1d;--raise:#1f2023;--ink:#f1f2f3;--ink2:#c2c6cc;--muted:#8b9096;--line:#2b2c2f;--hair:rgba(255,255,255,.10);--accent:#8b83f0;--accent-ink:#a79ff5;--accent-wash:rgba(120,110,235,.14);--amber:#f0b055;--amber-bg:rgba(224,140,20,.16);--code:#26272a}
+  :root[data-theme="light"]{color-scheme:light;--plane:#f5f5f2;--surface:#fffffe;--raise:#fbfbf9;--ink:#16171c;--ink2:#44454c;--muted:#83848b;--line:#e6e5df;--hair:rgba(20,21,26,.09);--accent:#4f46e5;--accent-ink:#4338ca;--accent-wash:rgba(79,70,229,.07);--amber:#b25e00;--amber-bg:rgba(224,140,20,.13);--code:#ecebe6}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;background:var(--plane);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:0 26px}
+  .topbar{background:var(--surface);border-bottom:1px solid var(--line);padding:16px 0}
+  .topbar .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .topbar .eyebrow{font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent-ink)}
+  .topbar .badge{font-size:11px;font-weight:700;letter-spacing:.03em;padding:2px 9px;border-radius:20px;background:var(--amber-bg);color:var(--amber)}
+  .theme-toggle{appearance:none;border:1px solid var(--hair);background:var(--surface);color:var(--ink2);width:34px;height:34px;border-radius:9px;cursor:pointer;font-size:15px;margin-left:auto}
   main{padding:34px 0 90px}
-  #doc{opacity:0; transition:opacity .2s}
-  #doc.ready{opacity:1}
-
-  #doc h1{font-size:30px; font-weight:780; letter-spacing:-.02em; line-height:1.12; margin:.2em 0 .5em; text-wrap:balance}
-  #doc h2{font-size:22px; font-weight:730; letter-spacing:-.012em; margin:1.7em 0 .5em; padding-bottom:.3em; border-bottom:1px solid var(--line); text-wrap:balance}
-  #doc h3{font-size:16.5px; font-weight:680; margin:1.5em 0 .4em}
-  #doc h4{font-size:14px; font-weight:680; margin:1.3em 0 .3em; color:var(--ink2)}
-  #doc p{color:var(--ink2)}
-  #doc strong{color:var(--ink); font-weight:660}
-  #doc a{color:var(--accent-ink)}
-  #doc hr{border:none; border-top:1px solid var(--line); margin:2em 0}
-  #doc ul,#doc ol{color:var(--ink2); padding-left:1.3em}
-  #doc li{margin:.2em 0}
-  #doc code{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.88em; background:var(--code); padding:1px 6px; border-radius:5px; color:var(--ink)}
-  #doc blockquote{border-left:3px solid var(--accent); background:var(--surface); margin:1em 0; padding:10px 16px; border-radius:0 10px 10px 0; color:var(--ink2)}
-
-  /* tables */
-  #doc table{border-collapse:collapse; width:100%; font-size:13.6px; margin:1em 0; display:block; overflow-x:auto}
+  #doc h1{font-size:30px;font-weight:780;letter-spacing:-.02em;line-height:1.12;margin:.2em 0 .5em;text-wrap:balance}
+  #doc h2{font-size:22px;font-weight:730;letter-spacing:-.012em;margin:1.7em 0 .5em;padding-bottom:.3em;border-bottom:1px solid var(--line);text-wrap:balance}
+  #doc h3{font-size:16.5px;font-weight:680;margin:1.5em 0 .4em}
+  #doc h4{font-size:14px;font-weight:680;margin:1.3em 0 .3em;color:var(--ink2)}
+  #doc p{color:var(--ink2)}#doc strong{color:var(--ink);font-weight:660}#doc a{color:var(--accent-ink)}
+  #doc hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+  #doc ul,#doc ol{color:var(--ink2);padding-left:1.3em}#doc li{margin:.2em 0}
+  #doc code{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:.88em;background:var(--code);padding:1px 6px;border-radius:5px;color:var(--ink)}
+  #doc blockquote{border-left:3px solid var(--accent);background:var(--surface);margin:1em 0;padding:10px 16px;border-radius:0 10px 10px 0;color:var(--ink2)}
+  #doc table{border-collapse:collapse;width:100%;font-size:13.6px;margin:1em 0;display:block;overflow-x:auto}
   #doc thead{background:var(--raise)}
-  #doc th{text-align:left; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
-  #doc td{padding:10px 13px; border-bottom:1px solid var(--line); color:var(--ink2); vertical-align:top}
-  #doc tbody tr:last-child td{border-bottom:none}
-  #doc td strong,#doc td b{color:var(--ink)}
-
-  /* header meta table (first table, 4 cols no header) */
-  #doc table:first-of-type{border:1px solid var(--line); border-radius:10px}
-
-  /* AI-generated badge */
-  .ai{display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.02em; padding:1px 7px; border-radius:20px; background:var(--amber-bg); color:var(--amber); white-space:nowrap; vertical-align:baseline}
-
-  /* mermaid */
-  #doc pre.mermaid{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px; margin:1.2em 0; overflow-x:auto; text-align:center; line-height:normal}
-  #doc pre:not(.mermaid){background:var(--code); border:1px solid var(--hair); border-radius:10px; padding:14px 16px; overflow-x:auto}
-  #doc pre:not(.mermaid) code{background:none; padding:0}
-
-  .loading{color:var(--muted); font-size:14px; padding:40px 0}
+  #doc th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:10px 13px;border-bottom:1px solid var(--line);white-space:nowrap}
+  #doc td{padding:10px 13px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+  #doc tbody tr:last-child td{border-bottom:none}#doc td strong,#doc td b{color:var(--ink)}
+  #doc table:first-of-type{border:1px solid var(--line);border-radius:10px}
+  #doc em{font-style:italic}
+  #doc pre.mermaid{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;margin:1.2em 0;overflow-x:auto;text-align:center;line-height:normal}
+  #doc pre:not(.mermaid){background:var(--code);border:1px solid var(--hair);border-radius:10px;padding:14px 16px;overflow-x:auto}
+  #doc pre:not(.mermaid) code{background:none;padding:0}
 </style>
 </head>
 <body>
@@ -99,58 +44,756 @@
   <div class="wrap row">
     <span class="eyebrow">CSP Decline Intelligence · Part 1</span>
     <span class="badge">Draft PRD</span>
-    <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme" style="margin-left:auto">◑</button>
+    <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">◑</button>
   </div>
 </div>
+<main><div class="wrap"><div id="doc">
+<h1>Decline &amp; Install-Failure Reason Set — the CSP&#39;s stated reason, captured clean</h1>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Owner</strong> — Ashish Raj (PM)</td>
+<td><strong>Reviewer</strong> — TBD ⚠️ <em>AI GENERATED — review</em></td>
+<td><strong>Status</strong> — Draft</td>
+<td><strong>Sign-off</strong> — Pending</td>
+</tr>
+<tr>
+<td><strong>Version</strong> — v0.1 · 11 Aug 2026</td>
+<td><strong>Consulted — CSP App</strong> — TBD ⚠️ <em>AI GENERATED — review</em></td>
+<td><strong>Consulted — Data/Analytics</strong> — TBD ⚠️ <em>AI GENERATED — review</em></td>
+<td><strong>Consulted — Serviceability (Genie)</strong> — TBD ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>1. Objective &amp; Definition of Success</h2>
+<p><strong>Objective.</strong> Every time a CSP won&#39;t install a booking, we capture <em>why</em> in a form we can trust — a single, unbiased, complete reason — so the system can later stop sending that customer to a CSP who won&#39;t serve them ⚠️ <em>AI GENERATED — review</em> (the routing action itself is downstream and out of scope here).</p>
+<p><strong>Boundary.</strong> This spec governs the <strong>reason picker</strong> — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a <strong>decline</strong> (before he accepts the booking) and an <strong>install-failure report</strong> (after acceptance, on site). It leaves unchanged: routing / DAS, the nearby-connections assist popup (Part 2), the verification layer (Part 3), Genie serviceability, and the future Availability service action for &quot;technician not available&quot; — all separate specs (AC-REG-1). Reasons already recorded on past events are never altered (AC-REG-2 ⚠️ <em>AI GENERATED — review</em>). Exactly one primary reason is recorded per event (C-04), with an optional price sub-tag and an &quot;Other&quot; free-text.</p>
+<h3>Guardrails — promises that hold on every path</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Guardrail</th>
+<th>One line</th>
+<th>Anchors</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>G1</td>
+<td><strong>No reason, no record</strong></td>
+<td>Every decline and install-failure is recorded with exactly one valid reason (or &quot;Other&quot; plus non-empty text).</td>
+<td>R1b · R3b · AC-REC-1 · AC-BLK-1 · MQ-2</td>
+</tr>
+<tr>
+<td>G2</td>
+<td><strong>No position bias</strong></td>
+<td>Reason order is randomised so no reason gains selection share from where it sits; &quot;Other&quot; is always last.</td>
+<td>R1c · AC-GRD-1 · MQ-1</td>
+</tr>
+<tr>
+<td>G3</td>
+<td><strong>One taxonomy, both sides</strong></td>
+<td>Decline and install-failure always draw from one identical reason list.</td>
+<td>R4 · AC-GRD-2 · MQ-6</td>
+</tr>
+<tr>
+<td>G4</td>
+<td><strong>No signal lost on club</strong></td>
+<td>Clubbing &quot;not interested&quot; and &quot;price&quot; into &quot;Customer refused&quot; preserves the price case as a sub-tag.</td>
+<td>R2 · AC-REC-2 · MQ-4</td>
+</tr>
+</tbody></table>
+<h3>Success metrics</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Metric</th>
+<th>Baseline</th>
+<th>Target</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>M1</td>
+<td>Selection share of a reason no longer varies with its display position (position bias removed)</td>
+<td>n/a — new capability (order was fixed)</td>
+<td>No detectable position effect ⚠️ <em>AI GENERATED — review</em></td>
+<td>MQ-1</td>
+</tr>
+<tr>
+<td>M2</td>
+<td>Declines / install-failures recorded with exactly one valid reason</td>
+<td>~100% <em>(today&#39;s list is mandatory single-select)</em> ⚠️ <em>AI GENERATED — review</em></td>
+<td>100%</td>
+<td>MQ-2</td>
+</tr>
+<tr>
+<td>M3</td>
+<td>Volume of &quot;Other&quot; selections and recurring free-text themes surfaced for taxonomy review</td>
+<td>n/a — new capability</td>
+<td>Reviewable monthly ⚠️ <em>AI GENERATED — review</em></td>
+<td>MQ-3</td>
+</tr>
+</tbody></table>
+<p><strong>Invariant (not a metric):</strong> G1 reason-less decline/failure = 0, zero tolerance. Monitored via MQ-2, not trended.</p>
+<hr>
+<h2>2. User Stories &amp; Rules</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Story</th>
+<th>MUST</th>
+<th>MUST NOT</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R1</td>
+<td>As a CSP who won&#39;t install a booking, I see a clear list of reasons and pick the one that fits, so I can tell Wiom why in one tap.</td>
+<td><strong>(a)</strong> Show the current configured reason list (C-01) at both capture points. <strong>(b)</strong> Require exactly one primary reason (C-04) before the decline / install-failure is accepted. <strong>(c)</strong> Randomise the order per task (C-02) with &quot;Other&quot; pinned last.</td>
+<td>Record a decline / install-failure with no reason, or with more than one primary reason.</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>As Wiom, when the CSP says the customer refused, I still want to know if it was about price.</td>
+<td><strong>(a)</strong> Offer an optional &quot;price&quot; sub-tag under &quot;Customer refused&quot;. <strong>(b)</strong> Record the sub-tag when chosen.</td>
+<td><strong>(a)</strong> Force the sub-tag — it is optional. <strong>(b)</strong> Lose the price distinction that existed before &quot;not interested&quot; and &quot;price&quot; were clubbed.</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>As a CSP whose reason isn&#39;t in the list, I pick &quot;Other&quot; and type it, so a missing reason still gets captured.</td>
+<td><strong>(a)</strong> Offer &quot;Other&quot;, always last. <strong>(b)</strong> Require non-empty free-text (C-03) when &quot;Other&quot; is chosen. <strong>(c)</strong> Store the free-text for later taxonomy review ⚠️ <em>AI GENERATED — review</em>.</td>
+<td><strong>(a)</strong> Accept &quot;Other&quot; with empty text. <strong>(b)</strong> Show the free-text back to the CSP as anything but his own input.</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>As Wiom, I want the decline and install-failure lists to stay identical so the two moments can be read together.</td>
+<td>Serve one identical configured list (C-01) at both capture points.</td>
+<td>Let the two lists diverge.</td>
+</tr>
+<tr>
+<td>R5</td>
+<td>As the taxonomy owner, I want to change the reason list without shipping a new app build, so the list can evolve as &quot;Other&quot; surfaces new reasons.</td>
+<td><strong>(a)</strong> Keep the reason list — items, active/retired, order-eligibility — config-driven (C-01). <strong>(b)</strong> A reason retired in config stops appearing on new sheets from that change forward.</td>
+<td><strong>(a)</strong> Alter reasons already recorded on past events. <strong>(b)</strong> Show a retired reason on a newly opened sheet.</td>
+</tr>
+<tr>
+<td>R6</td>
+<td>As a CSP with no technician available, I can pick &quot;Technician not available (ladka nahi hai)&quot;, so that supply gap is captured.</td>
+<td>Capture it like any other reason.</td>
+<td>Trigger any availability / pause-installs action in V1 — the Availability-service handoff is out of scope here ⚠️ <em>AI GENERATED — review</em>.</td>
+</tr>
+<tr>
+<td>R7</td>
+<td>As Data, I want removed and clubbed reasons to map to their new home, so historical trend lines stay comparable.</td>
+<td>Maintain a mapping: old &quot;Network setup not possible&quot; → the coverage reason &quot;Service not available&quot;; old &quot;Customer not interested&quot; and &quot;Customer did not agree with the plan price&quot; → &quot;Customer refused&quot; (price → the price sub-tag) ⚠️ <em>AI GENERATED — review</em>.</td>
+<td>Break trend continuity by dropping the old reasons with no mapping.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>3. System Behaviour</h2>
+<h3>3a. System flow chart</h3>
+<pre class="mermaid">flowchart TD
+    A["CSP submits a decline / install-failure"] --> Z{"Already recorded for this event?"}
+    Z -- "Yes" --> T5["T5 — keep the first record (idempotent)"]
+    Z -- "No" --> B{"One primary reason selected?"}
+    B -- "No" --> T4["T4 — submission blocked, prompt to pick a reason"]
+    B -- "Yes" --> C{"Reason = Other?"}
+    C -- "Yes" --> D{"Free-text non-empty? (C-03)"}
+    D -- "No" --> T4b["T4 — submission blocked, prompt to add text"]
+    D -- "Yes" --> T3["T3 — record with Other + free-text"]
+    C -- "No" --> E{"Reason = Customer refused?"}
+    E -- "Yes" --> T2["T2 — record with Customer refused (+ optional price sub-tag)"]
+    E -- "No" --> T1["T1 — record with the selected reason"]
+</pre>
+<p><strong>Precedence:</strong> the reason list is read when the sheet is <strong>rendered</strong>; a reason valid at render stays valid for that submission even if config retires it before the CSP taps submit (AC-RACE-1 ⚠️ <em>AI GENERATED — review</em>).</p>
+<h3>3b. State transition table — canon</h3>
+<p>Lifecycle of a <strong>reason-capture</strong> (created when a CSP submits a decline or an install-failure report; it attaches the stated reason to that event). The decline / install-failure state machine itself — the ES candidate&#39;s <code>DECLINED</code> and <code>INSTALLATION_REPORTED_FAILED</code> transitions — is out of scope; this spec governs only the reason attached to those events.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>From</th>
+<th>Action / Trigger</th>
+<th>Rule / Check</th>
+<th>To</th>
+<th>Side-effects</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T1</td>
+<td>—</td>
+<td>Submit with a listed reason (not Other, not Customer refused)</td>
+<td>Exactly one primary reason selected (R1b)</td>
+<td>Recorded</td>
+<td>Reason-capture stored: reason + capture point (decline / install-failure); the display order used is logged (MQ-1).</td>
+</tr>
+<tr>
+<td>T2</td>
+<td>—</td>
+<td>Submit with &quot;Customer refused&quot;</td>
+<td>One primary reason selected (R1b)</td>
+<td>Recorded</td>
+<td>Stored as &quot;Customer refused&quot; with the optional price sub-tag if chosen (R2).</td>
+</tr>
+<tr>
+<td>T3</td>
+<td>—</td>
+<td>Submit with &quot;Other&quot;</td>
+<td>Free-text non-empty (R3b, C-03)</td>
+<td>Recorded</td>
+<td>Stored as &quot;Other&quot; + the free-text; text queued for taxonomy review (R3c) ⚠️ <em>AI GENERATED — review</em>.</td>
+</tr>
+<tr>
+<td>T4</td>
+<td>Sheet shown</td>
+<td>Submit</td>
+<td>No primary reason selected, <strong>or</strong> &quot;Other&quot; with empty text</td>
+<td>Sheet shown</td>
+<td>Submission blocked; CSP prompted to pick a reason / add text (R1b, R3b). Nothing is recorded.</td>
+</tr>
+<tr>
+<td>T5</td>
+<td>Recorded</td>
+<td>Duplicate submit for the same event (double-tap)</td>
+<td>Event already recorded</td>
+<td>Recorded</td>
+<td>No second reason-capture is created — the first stands (idempotent) ⚠️ <em>AI GENERATED — review</em>.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>4. Screen Requirements</h2>
+<p><strong>Experience intent:</strong> the CSP tells us why in one honest tap — the list is short, neutral, and never nudges him toward one answer. ⚠️ <em>AI GENERATED — review</em></p>
+<p><strong>Master design file:</strong> TBD — the exact Step-1 UX is finalised by the Solutions team. ⚠️ <em>AI GENERATED — review</em></p>
+<h3>Reason sheet (CSP app) — decline &amp; install-failure — design TBD</h3>
+<p><strong>States:</strong> default (list shown, none selected) · reason selected · &quot;Other&quot; selected (free-text field shown) · &quot;Customer refused&quot; selected (price sub-tag shown) · submit blocked (no reason, or Other with empty text)
+<strong>Freshness:</strong> the list reflects the current config (C-01) on open.</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Source / Routes to</th>
+<th>Logic</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Field — reason list</td>
+<td>config (C-01); order per C-02</td>
+<td>randomised per task, &quot;Other&quot; always last (R1c, G2)</td>
+</tr>
+<tr>
+<td>Action — select one reason</td>
+<td>—</td>
+<td>single-select; max one primary reason (C-04)</td>
+</tr>
+<tr>
+<td>Field — price sub-tag</td>
+<td>config (C-01)</td>
+<td>shown only when &quot;Customer refused&quot; is selected; optional (R2a)</td>
+</tr>
+<tr>
+<td>Check — &quot;Other&quot; free-text</td>
+<td>—</td>
+<td>required non-empty (C-03) when &quot;Other&quot; selected; else submit blocked (R3b, T4)</td>
+</tr>
+<tr>
+<td>Action — submit</td>
+<td>T1 / T2 / T3 via §3a</td>
+<td>precondition: one primary reason, plus non-empty text if &quot;Other&quot;</td>
+</tr>
+</tbody></table>
+<h3>Reason-config console (internal) — design TBD ⚠️ <em>AI GENERATED — review</em></h3>
+<p><strong>States:</strong> list of reasons (active / retired) · edit
+<strong>Freshness:</strong> changes take effect on the next sheet render (R5b)</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Source / Routes to</th>
+<th>Logic</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Field — reason list</td>
+<td>config (C-01)</td>
+<td>shows active and retired reasons</td>
+</tr>
+<tr>
+<td>Action — add / retire / reorder-eligibility</td>
+<td>—</td>
+<td>edits C-01; no app release (R5a); does not alter past records (R5 MUST NOT)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>5. Configurability</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Parameter</th>
+<th>Default</th>
+<th>Range</th>
+<th>Who changes it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C-01</td>
+<td>Reason list — items, active/retired, order-eligibility, price sub-tag (governs the sheet, R1a/R4/R5)</td>
+<td>V1 list: Service not available at this location · Required device is currently unavailable · Customer refused (+ optional price sub-tag) · Installation could not be scheduled · Could not understand the address · Technician not available (ladka nahi hai) · Other</td>
+<td>Editable via config (add / remove / reorder-eligibility)</td>
+<td>Product</td>
+</tr>
+<tr>
+<td>C-02</td>
+<td>Reason-order randomisation scope (R1c)</td>
+<td>Per task; &quot;Other&quot; pinned last</td>
+<td>{per task, off} ⚠️ <em>AI GENERATED — review</em></td>
+<td>Product</td>
+</tr>
+<tr>
+<td>C-03</td>
+<td>&quot;Other&quot; free-text minimum (R3b)</td>
+<td>Non-empty (≥ 1 character) ⚠️ <em>AI GENERATED — review</em></td>
+<td>Fixed in V1 ⚠️ <em>AI GENERATED — review</em></td>
+<td>Product</td>
+</tr>
+<tr>
+<td>C-04</td>
+<td>Max primary reasons per event (R1b)</td>
+<td>1</td>
+<td>Fixed in V1</td>
+<td>Product</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>6. Measurement</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>The system must be able to answer…</th>
+<th>Feeds</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MQ-1</td>
+<td>Does the selection share of each reason depend on its display position?</td>
+<td>M1 · G2</td>
+</tr>
+<tr>
+<td>MQ-2</td>
+<td>What share of declines / install-failures were recorded with exactly one valid reason (and &quot;Other&quot; with non-empty text)?</td>
+<td>M2 · G1 invariant</td>
+</tr>
+<tr>
+<td>MQ-3</td>
+<td>How many &quot;Other&quot; selections were made, and what recurring themes appear in the free-text?</td>
+<td>M3 (taxonomy evolution)</td>
+</tr>
+<tr>
+<td>MQ-4</td>
+<td>Of &quot;Customer refused&quot; selections, what share carried the price sub-tag?</td>
+<td>R2 · G4</td>
+</tr>
+<tr>
+<td>MQ-5</td>
+<td>What is the reason distribution across both capture points after the change, mapped to the pre-change trend?</td>
+<td>R7 (continuity) ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+<tr>
+<td>MQ-6</td>
+<td>Do the decline sheet and the install-failure sheet serve the identical reason set in production?</td>
+<td>G3 · R4</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>7. Acceptance Criteria</h2>
+<h3>REC — Reason recorded (T1, T2, T3)</h3>
+<table>
+<thead>
+<tr>
+<th>AC</th>
+<th>Given / When / Then</th>
+<th>Verifies</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AC-REC-1</td>
+<td><strong>Given</strong> a CSP declining a booking in zone_3289, with the sheet showing 6 reasons + &quot;Other&quot;, <strong>When</strong> he selects &quot;Service not available at this location&quot; and submits, <strong>Then</strong> the decline is recorded with that one reason, capture point = decline, and the display order shown is logged.</td>
+<td>R1a · R1b · T1 · G1</td>
+<td>Settled</td>
+</tr>
+<tr>
+<td>AC-REC-2</td>
+<td><strong>Given</strong> a CSP filing an install-failure on site, <strong>When</strong> he selects &quot;Customer refused&quot;, taps the &quot;price&quot; sub-tag, and submits, <strong>Then</strong> the failure is recorded with reason &quot;Customer refused&quot; and sub-tag &quot;price&quot;.</td>
+<td>R2a · R2b · T2 · G4</td>
+<td>Settled</td>
+</tr>
+<tr>
+<td>AC-REC-3</td>
+<td><strong>Given</strong> &quot;Customer refused&quot; is selected and the price sub-tag is <em>not</em> tapped, <strong>When</strong> he submits, <strong>Then</strong> it is recorded as &quot;Customer refused&quot; with no sub-tag.</td>
+<td>R2a (optional) · T2</td>
+<td>Settled</td>
+</tr>
+<tr>
+<td>AC-REC-4</td>
+<td><strong>Given</strong> the CSP selects &quot;Other&quot;, <strong>When</strong> he types &quot;gali me ladai ho rahi thi, ja nahi paya&quot; and submits, <strong>Then</strong> it is recorded with reason &quot;Other&quot; and that free-text, and the text is queued for taxonomy review.</td>
+<td>R3a · R3b · R3c · T3</td>
+<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+<tr>
+<td>AC-REC-5</td>
+<td><strong>Given</strong> the CSP selects &quot;Technician not available (ladka nahi hai)&quot;, <strong>When</strong> he submits, <strong>Then</strong> it is recorded as that reason and <strong>no</strong> availability / pause-installs action fires.</td>
+<td>R6 · T1</td>
+<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+</tbody></table>
+<h3>BLK — Submission blocked (T4)</h3>
+<table>
+<thead>
+<tr>
+<th>AC</th>
+<th>Given / When / Then</th>
+<th>Verifies</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AC-BLK-1</td>
+<td><strong>Given</strong> the reason sheet with no reason selected, <strong>When</strong> the CSP taps submit, <strong>Then</strong> submission is blocked, he is prompted to pick a reason, and no reason-capture is recorded.</td>
+<td>R1b · T4 · G1</td>
+<td>Settled</td>
+</tr>
+<tr>
+<td>AC-BLK-2</td>
+<td><strong>Given</strong> &quot;Other&quot; is selected with an empty text field, <strong>When</strong> he taps submit, <strong>Then</strong> submission is blocked, he is prompted to add text, and nothing is recorded.</td>
+<td>R3b · T4 · C-03</td>
+<td>Settled</td>
+</tr>
+</tbody></table>
+<h3>WF — Workflows (open → select → record)</h3>
+<table>
+<thead>
+<tr>
+<th>AC</th>
+<th>Given / When / Then</th>
+<th>Verifies</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AC-WF-1</td>
+<td><strong>Given</strong> a CSP declining a booking, with the reason sheet loaded from config C-01, <strong>When</strong> he is shown the per-task randomised list (&quot;Other&quot; last), selects &quot;Service not available at this location&quot;, and submits, <strong>Then</strong> the decline is recorded with that one reason, the display order used is logged, and downstream routing runs exactly as before.</td>
+<td>R1a · R1b · R1c · T1 · G1 · G2 · §1 Boundary</td>
+<td>Settled</td>
+</tr>
+</tbody></table>
+<h3>GRD — Guardrails</h3>
+<table>
+<thead>
+<tr>
+<th>AC</th>
+<th>Given / When / Then</th>
+<th>Verifies</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AC-GRD-1</td>
+<td><strong>Given</strong> task A&#39;s reason sheet, <strong>When</strong> the CSP opens it twice within task A, <strong>Then</strong> the order is identical both times (per-task stable, C-02); across a different task B the order may differ; and &quot;Other&quot; is last in every render.</td>
+<td>R1c · G2 · C-02</td>
+<td>Settled</td>
+</tr>
+<tr>
+<td>AC-GRD-2</td>
+<td><strong>Given</strong> one config (C-01), <strong>When</strong> the sheet renders at a decline and at an install-failure, <strong>Then</strong> both show the identical set of reasons in the same membership.</td>
+<td>R4 · G3</td>
+<td>Settled</td>
+</tr>
+</tbody></table>
+<h3>CFG — Configurability (C-01)</h3>
+<table>
+<thead>
+<tr>
+<th>AC</th>
+<th>Given / When / Then</th>
+<th>Verifies</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AC-CFG-1</td>
+<td><strong>Given</strong> Product retires &quot;Could not understand the address&quot; in config, <strong>When</strong> a CSP opens a new reason sheet, <strong>Then</strong> that reason no longer appears — with no app release — and events that already recorded it are unchanged.</td>
+<td>R5a · R5b · R5(MUST NOT)</td>
+<td>Settled</td>
+</tr>
+<tr>
+<td>AC-CFG-2</td>
+<td><strong>Given</strong> Product adds a new reason in config, <strong>When</strong> the sheet next renders, <strong>Then</strong> the new reason appears in the randomised list (before &quot;Other&quot;).</td>
+<td>R5a · C-01</td>
+<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+</tbody></table>
+<h3>RACE — Races</h3>
+<table>
+<thead>
+<tr>
+<th>AC</th>
+<th>Given / When / Then</th>
+<th>Verifies</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AC-RACE-1</td>
+<td><strong>Given</strong> a CSP opened the sheet while &quot;Could not understand the address&quot; was active, <strong>When</strong> config retires it before he taps submit and he had selected it, <strong>Then</strong> the submission still records that reason (valid at render), and the next sheet render omits it.</td>
+<td>§3a precedence</td>
+<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+</tbody></table>
+<h3>DUP — Duplicate trigger (T5)</h3>
+<table>
+<thead>
+<tr>
+<th>AC</th>
+<th>Given / When / Then</th>
+<th>Verifies</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AC-DUP-1</td>
+<td><strong>Given</strong> a decline already recorded with &quot;Service not available&quot;, <strong>When</strong> the CSP double-taps submit, <strong>Then</strong> exactly one reason-capture exists for that event.</td>
+<td>T5</td>
+<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+</tbody></table>
+<h3>BV — Boundary values (&quot;Other&quot; text length, C-03)</h3>
+<table>
+<thead>
+<tr>
+<th>AC</th>
+<th>Given / When / Then</th>
+<th>Verifies</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AC-BV-1</td>
+<td><strong>Given</strong> &quot;Other&quot; selected, <strong>When</strong> the text field has 0 characters, <strong>Then</strong> submit is blocked (C-03 floor).</td>
+<td>C-03 · R3b</td>
+<td>Settled</td>
+</tr>
+<tr>
+<td>AC-BV-2</td>
+<td><strong>Given</strong> &quot;Other&quot; selected, <strong>When</strong> the text field has 1 character, <strong>Then</strong> submit is allowed and the reason-capture stores that text.</td>
+<td>C-03 · R3b</td>
+<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+</tbody></table>
+<h3>REG — Regression (§1 Boundary)</h3>
+<table>
+<thead>
+<tr>
+<th>AC</th>
+<th>Given / When / Then</th>
+<th>Verifies</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AC-REG-1</td>
+<td><strong>Given</strong> a decline recorded through the new reason set, <strong>When</strong> downstream routing / DAS runs, <strong>Then</strong> routing behaviour is exactly as it is today — this spec changes only what reason is captured, not what happens next.</td>
+<td>§1 Boundary</td>
+<td>Settled</td>
+</tr>
+<tr>
+<td>AC-REG-2</td>
+<td><strong>Given</strong> declines recorded before this change (e.g. old &quot;Network setup not possible&quot;), <strong>When</strong> the new list ships, <strong>Then</strong> those historical records are unchanged and remain mapped to their new home for trend continuity (R7).</td>
+<td>§1 Boundary · R7</td>
+<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>8. Glossary</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+<th>Owner (domain)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Reason-capture</td>
+<td><strong>Canonical definition:</strong> the record attaching one stated reason (plus optional price sub-tag or &quot;Other&quot; free-text, and the capture point) to a decline or install-failure event. All other mentions cite this.</td>
+<td>Data</td>
+</tr>
+<tr>
+<td>Capture point</td>
+<td>Which of the two moments the reason was given: <strong>decline</strong> (before the CSP accepts the booking) or <strong>install-failure report</strong> (after acceptance, on site). Both use the same list (R4).</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Customer refused</td>
+<td><strong>Canonical definition:</strong> the single customer-intent reason formed by clubbing the old &quot;Customer is not interested&quot; and &quot;Customer did not agree with the plan price&quot;. Carries an optional <strong>price</strong> sub-tag so the price case is not lost (R2, G4).</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Other</td>
+<td>The catch-all reason, always shown last, requiring non-empty free-text (R3). Its text is the raw input for evolving the list (M3).</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Reason list</td>
+<td><strong>Canonical definition:</strong> the config-driven set of reasons (items, active/retired, order-eligibility, price sub-tag) served to the sheet; changeable without an app release (C-01, R5).</td>
+<td>Product</td>
+</tr>
+<tr>
+<td>Position bias</td>
+<td>The tendency to pick a reason because of where it sits in the list, not because it is true — the effect randomisation (G2, C-02) removes.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Technician not available (ladka nahi hai)</td>
+<td>A reason for &quot;no technician / labour to send&quot;. Captured only in V1; its Availability-service handoff (pause installs for the day) is out of scope here.</td>
+<td>Product</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>9. Notes for System Capabilities</h2>
+<p>What the platform must be able to do for this feature to exist. Whether these are one system or several, and how they interact, is the implementer&#39;s design.</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Needed by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Serve a config-driven reason list at both capture points, randomised per task with &quot;Other&quot; last.</td>
+<td>R1 · R4 · C-01 · C-02 · G2 · G3</td>
+</tr>
+<tr>
+<td>Require and store exactly one primary reason per event, plus an optional price sub-tag and &quot;Other&quot; free-text.</td>
+<td>R1b · R2 · R3 · C-04 · G1</td>
+</tr>
+<tr>
+<td>Change the reason list — add / remove / reorder-eligibility — without an app release, effective on next render, without touching past records.</td>
+<td>R5 · C-01</td>
+</tr>
+<tr>
+<td>Log the display order used per event, to test that selection share is position-independent.</td>
+<td>M1 · MQ-1 · G2</td>
+</tr>
+<tr>
+<td>Preserve historical reasons and map removed / clubbed reasons to their new home for trend continuity.</td>
+<td>R7 · MQ-5</td>
+</tr>
+<tr>
+<td>Queue &quot;Other&quot; free-text for taxonomy review.</td>
+<td>R3c · M3 · MQ-3</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>AI-generated content for review</h2>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>What was generated</th>
+<th>Basis</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Header</td>
+<td>Reviewer + all three Consulted names = TBD</td>
+<td>No names supplied; PRD needs an Eng reviewer and consulted domains named before sign-off.</td>
+</tr>
+<tr>
+<td>§1 Objective</td>
+<td>The customer-outcome tail (&quot;stop sending that customer to a CSP who won&#39;t serve them&quot;)</td>
+<td>Part 1 is capture-only; the direct customer outcome is downstream. Inferred from the initiative&#39;s purpose to satisfy the &quot;customer outcome&quot; rule.</td>
+</tr>
+<tr>
+<td>§1 M1 target</td>
+<td>&quot;No detectable position effect&quot;</td>
+<td>PM asked to remove position bias; the pass/fail bar for M1 is inferred, not stated.</td>
+</tr>
+<tr>
+<td>§1 M2 baseline</td>
+<td>&quot;~100% today&quot;</td>
+<td>Inferred: today&#39;s list is mandatory single-select. Confirm the current capture is truly reason-mandatory.</td>
+</tr>
+<tr>
+<td>§1 M3 target</td>
+<td>&quot;Reviewable monthly&quot;</td>
+<td>Cadence for taxonomy review not stated.</td>
+</tr>
+<tr>
+<td>§2 R3c</td>
+<td>Store &quot;Other&quot; free-text for taxonomy review</td>
+<td>Storing/mining free-text is implied by the self-learning intent but not stated for Part 1. Confirm it is in scope here vs Part 3.</td>
+</tr>
+<tr>
+<td>§2 R6</td>
+<td>&quot;No availability action in V1&quot;</td>
+<td>From the brief (handoff out of scope); the explicit V1 &quot;capture only, no action&quot; behaviour is inferred.</td>
+</tr>
+<tr>
+<td>§2 R7 + MQ-5 + AC-REG-2</td>
+<td>Historical mapping / trend continuity for removed &amp; clubbed reasons</td>
+<td>Not raised by the PM; added so the change doesn&#39;t break reporting. Confirm it is wanted and confirm the exact old→new mapping.</td>
+</tr>
+<tr>
+<td>§3b T5 + AC-DUP-1</td>
+<td>Duplicate-submit is idempotent (one reason-capture)</td>
+<td>Standard safeguard; duplicate-trigger behaviour not specified.</td>
+</tr>
+<tr>
+<td>§3a precedence + AC-RACE-1</td>
+<td>Reason validity is fixed at render</td>
+<td>A rule was needed for config changing mid-session; the chosen resolution is inferred.</td>
+</tr>
+<tr>
+<td>§4</td>
+<td>Design links = TBD (Solutions team); Reason-config console screen; experience-intent line</td>
+<td>UX not yet designed; the internal config console is inferred from the config-driven decision.</td>
+</tr>
+<tr>
+<td>§5 C-02</td>
+<td>Range &quot;{per task, off}&quot;</td>
+<td>PM chose &quot;per task&quot;; the allowed range is inferred.</td>
+</tr>
+<tr>
+<td>§5 C-03</td>
+<td>&quot;Other&quot; minimum = non-empty (≥1 char), Fixed in V1</td>
+<td>Min-length rule not specified; non-empty is the minimal safe default.</td>
+</tr>
+<tr>
+<td>§7 AC-REC-4/5, AC-CFG-2, AC-RACE-1, AC-DUP-1, AC-BV-2, AC-REG-2</td>
+<td>Marked ACs</td>
+<td>Each rests on an inferred rule/behaviour above; they test decisions the PM has not yet confirmed.</td>
+</tr>
+</tbody></table>
 
-<main>
-  <div class="wrap">
-    <div id="doc"><p class="loading">Rendering the PRD…</p></div>
-  </div>
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+</div></div></main>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script>
   (function(){
-    // theme toggle
     var tb=document.getElementById('themeBtn');
-    tb.addEventListener('click',function(){
-      var r=document.documentElement, cur=r.getAttribute('data-theme');
-      if(!cur){cur=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}
-      r.setAttribute('data-theme', cur==='dark'?'light':'dark');
-    });
-
-    var doc=document.getElementById('doc');
-    var isDark = (document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'))==='dark';
-
-    fetch('./Decline_Reason_Set_PRD.md?cb='+Date.now())
-      .then(function(r){ if(!r.ok) throw new Error('load '+r.status); return r.text(); })
-      .then(function(md){
-        var html = (window.marked ? marked.parse(md) : md);
-        // style the AI-generated markers
-        html = html.replace(/⚠️\s*<em>AI GENERATED — review<\/em>/g,
-                            '<span class="ai">⚠ AI-generated · review</span>');
-        doc.innerHTML = html;
-
-        // convert ```mermaid code blocks into mermaid diagrams
-        doc.querySelectorAll('pre code.language-mermaid').forEach(function(cb){
-          var pre=document.createElement('pre'); pre.className='mermaid';
-          pre.textContent=cb.textContent; cb.parentElement.replaceWith(pre);
-        });
-        if(window.mermaid){
-          try{
-            mermaid.initialize({startOnLoad:false, securityLevel:'strict', theme: isDark?'dark':'neutral'});
-            mermaid.run({querySelector:'#doc .mermaid'});
-          }catch(e){}
-        }
-        doc.classList.add('ready');
-      })
-      .catch(function(e){
-        doc.innerHTML='<p class="loading">Could not load the PRD source ('+e.message+'). '+
-          'View it on <a href="https://github.com/ashish-raj-wiom/decline-intelligence-loop/blob/main/Decline_Reason_Set_PRD.md">GitHub</a>.</p>';
-        doc.classList.add('ready');
-      });
+    tb.addEventListener('click',function(){var r=document.documentElement,c=r.getAttribute('data-theme');if(!c){c=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}r.setAttribute('data-theme',c==='dark'?'light':'dark');});
+    var dark=(document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'))==='dark';
+    if(window.mermaid){try{mermaid.initialize({startOnLoad:false,securityLevel:'strict',theme:dark?'dark':'neutral'});mermaid.run({querySelector:'#doc .mermaid'});}catch(e){}}
   })();
 </script>
 </body>
