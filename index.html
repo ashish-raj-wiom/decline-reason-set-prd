@@ -73,7 +73,7 @@
 </tbody></table>
 <hr>
 <h2>1. Objective &amp; Definition of Success</h2>
-<p><strong>Objective.</strong> Every time a CSP won&#39;t install a booking, we capture <em>why</em> in a form we can trust — a single, unbiased, complete reason — so the system can later stop sending that customer to a CSP who won&#39;t serve them ⚠️ <em>AI GENERATED — review</em> (the routing action itself is downstream and out of scope here).</p>
+<p><strong>Objective.</strong> A CSP who won&#39;t install a booking picks the real reason from a list built for his situation — complete enough to fit his case, and unbiased in its order — so he chooses <em>consciously</em> instead of guessing, and the reason we capture is the true one.</p>
 <p><strong>Boundary.</strong> This spec governs the <strong>reason picker</strong> — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a <strong>decline</strong> (before he accepts the booking) and an <strong>install-failure report</strong> (after acceptance, on site). It leaves unchanged: routing / DAS, the nearby-connections assist popup (Part 2), the verification layer (Part 3), Genie serviceability, and the future Availability service action for &quot;technician not available&quot; — all separate specs (AC-REG-1). Reasons already recorded on past events are never altered (AC-REG-2 ⚠️ <em>AI GENERATED — review</em>). Exactly one primary reason is recorded per event (C-04), with an optional price sub-tag and an &quot;Other&quot; free-text.</p>
 <h3>Guardrails — promises that hold on every path</h3>
 <table>
@@ -718,11 +718,6 @@
 <td>Header</td>
 <td>Reviewer + all three Consulted names = TBD</td>
 <td>No names supplied; PRD needs an Eng reviewer and consulted domains named before sign-off.</td>
-</tr>
-<tr>
-<td>§1 Objective</td>
-<td>The customer-outcome tail (&quot;stop sending that customer to a CSP who won&#39;t serve them&quot;)</td>
-<td>Part 1 is capture-only; the direct customer outcome is downstream. Inferred from the initiative&#39;s purpose to satisfy the &quot;customer outcome&quot; rule.</td>
 </tr>
 <tr>
 <td>§1 M1 target</td>

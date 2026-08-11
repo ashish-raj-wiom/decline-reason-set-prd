@@ -9,7 +9,7 @@
 
 ## 1. Objective & Definition of Success
 
-**Objective.** Every time a CSP won't install a booking, we capture *why* in a form we can trust — a single, unbiased, complete reason — so the system can later stop sending that customer to a CSP who won't serve them ⚠️ *AI GENERATED — review* (the routing action itself is downstream and out of scope here).
+**Objective.** A CSP who won't install a booking picks the real reason from a list built for his situation — complete enough to fit his case, and unbiased in its order — so he chooses *consciously* instead of guessing, and the reason we capture is the true one.
 
 **Boundary.** This spec governs the **reason picker** — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a **decline** (before he accepts the booking) and an **install-failure report** (after acceptance, on site). It leaves unchanged: routing / DAS, the nearby-connections assist popup (Part 2), the verification layer (Part 3), Genie serviceability, and the future Availability service action for "technician not available" — all separate specs (AC-REG-1). Reasons already recorded on past events are never altered (AC-REG-2 ⚠️ *AI GENERATED — review*). Exactly one primary reason is recorded per event (C-04), with an optional price sub-tag and an "Other" free-text.
 
@@ -239,7 +239,6 @@ What the platform must be able to do for this feature to exist. Whether these ar
 | Location | What was generated | Basis |
 |---|---|---|
 | Header | Reviewer + all three Consulted names = TBD | No names supplied; PRD needs an Eng reviewer and consulted domains named before sign-off. |
-| §1 Objective | The customer-outcome tail ("stop sending that customer to a CSP who won't serve them") | Part 1 is capture-only; the direct customer outcome is downstream. Inferred from the initiative's purpose to satisfy the "customer outcome" rule. |
 | §1 M1 target | "No detectable position effect" | PM asked to remove position bias; the pass/fail bar for M1 is inferred, not stated. |
 | §1 M2 baseline | "~100% today" | Inferred: today's list is mandatory single-select. Confirm the current capture is truly reason-mandatory. |
 | §1 M3 target | "Reviewable monthly" | Cadence for taxonomy review not stated. |
