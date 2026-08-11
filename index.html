@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decline &amp; Install-Failure Reason Set — PRD (Draft)</title>
+<style>
+  :root{
+    color-scheme: light;
+    --plane:#f5f5f2; --surface:#fffffe; --raise:#fbfbf9;
+    --ink:#16171c; --ink2:#44454c; --muted:#83848b;
+    --line:#e6e5df; --hair:rgba(20,21,26,.09);
+    --accent:#4f46e5; --accent-ink:#4338ca; --accent-wash:rgba(79,70,229,.07);
+    --amber:#b25e00; --amber-bg:rgba(224,140,20,.13);
+    --code:#ecebe6;
+  }
+  @media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){
+    color-scheme:dark;
+    --plane:#0e0f11; --surface:#191a1d; --raise:#1f2023;
+    --ink:#f1f2f3; --ink2:#c2c6cc; --muted:#8b9096;
+    --line:#2b2c2f; --hair:rgba(255,255,255,.10);
+    --accent:#8b83f0; --accent-ink:#a79ff5; --accent-wash:rgba(120,110,235,.14);
+    --amber:#f0b055; --amber-bg:rgba(224,140,20,.16);
+    --code:#26272a;
+  }}
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --plane:#0e0f11; --surface:#191a1d; --raise:#1f2023;
+    --ink:#f1f2f3; --ink2:#c2c6cc; --muted:#8b9096;
+    --line:#2b2c2f; --hair:rgba(255,255,255,.10);
+    --accent:#8b83f0; --accent-ink:#a79ff5; --accent-wash:rgba(120,110,235,.14);
+    --amber:#f0b055; --amber-bg:rgba(224,140,20,.16);
+    --code:#26272a;
+  }
+  :root[data-theme="light"]{
+    color-scheme:light;
+    --plane:#f5f5f2; --surface:#fffffe; --raise:#fbfbf9;
+    --ink:#16171c; --ink2:#44454c; --muted:#83848b;
+    --line:#e6e5df; --hair:rgba(20,21,26,.09);
+    --accent:#4f46e5; --accent-ink:#4338ca; --accent-wash:rgba(79,70,229,.07);
+    --amber:#b25e00; --amber-bg:rgba(224,140,20,.13);
+    --code:#ecebe6;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--plane); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:15.5px; line-height:1.62; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px; margin:0 auto; padding:0 26px}
+
+  .topbar{background:var(--surface); border-bottom:1px solid var(--line); padding:16px 0}
+  .topbar .row{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+  .topbar .eyebrow{font-size:11px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--accent-ink)}
+  .topbar .badge{font-size:11px; font-weight:700; letter-spacing:.03em; padding:2px 9px; border-radius:20px; background:var(--amber-bg); color:var(--amber)}
+  .topbar a{color:var(--accent-ink); font-size:13px; text-decoration:none; margin-left:auto}
+  .topbar a:hover{text-decoration:underline}
+  .theme-toggle{appearance:none; border:1px solid var(--hair); background:var(--surface); color:var(--ink2); width:34px;height:34px;border-radius:9px; cursor:pointer; font-size:15px}
+
+  main{padding:34px 0 90px}
+  #doc{opacity:0; transition:opacity .2s}
+  #doc.ready{opacity:1}
+
+  #doc h1{font-size:30px; font-weight:780; letter-spacing:-.02em; line-height:1.12; margin:.2em 0 .5em; text-wrap:balance}
+  #doc h2{font-size:22px; font-weight:730; letter-spacing:-.012em; margin:1.7em 0 .5em; padding-bottom:.3em; border-bottom:1px solid var(--line); text-wrap:balance}
+  #doc h3{font-size:16.5px; font-weight:680; margin:1.5em 0 .4em}
+  #doc h4{font-size:14px; font-weight:680; margin:1.3em 0 .3em; color:var(--ink2)}
+  #doc p{color:var(--ink2)}
+  #doc strong{color:var(--ink); font-weight:660}
+  #doc a{color:var(--accent-ink)}
+  #doc hr{border:none; border-top:1px solid var(--line); margin:2em 0}
+  #doc ul,#doc ol{color:var(--ink2); padding-left:1.3em}
+  #doc li{margin:.2em 0}
+  #doc code{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.88em; background:var(--code); padding:1px 6px; border-radius:5px; color:var(--ink)}
+  #doc blockquote{border-left:3px solid var(--accent); background:var(--surface); margin:1em 0; padding:10px 16px; border-radius:0 10px 10px 0; color:var(--ink2)}
+
+  /* tables */
+  #doc table{border-collapse:collapse; width:100%; font-size:13.6px; margin:1em 0; display:block; overflow-x:auto}
+  #doc thead{background:var(--raise)}
+  #doc th{text-align:left; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
+  #doc td{padding:10px 13px; border-bottom:1px solid var(--line); color:var(--ink2); vertical-align:top}
+  #doc tbody tr:last-child td{border-bottom:none}
+  #doc td strong,#doc td b{color:var(--ink)}
+
+  /* header meta table (first table, 4 cols no header) */
+  #doc table:first-of-type{border:1px solid var(--line); border-radius:10px}
+
+  /* AI-generated badge */
+  .ai{display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.02em; padding:1px 7px; border-radius:20px; background:var(--amber-bg); color:var(--amber); white-space:nowrap; vertical-align:baseline}
+
+  /* mermaid */
+  #doc pre.mermaid{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px; margin:1.2em 0; overflow-x:auto; text-align:center; line-height:normal}
+  #doc pre:not(.mermaid){background:var(--code); border:1px solid var(--hair); border-radius:10px; padding:14px 16px; overflow-x:auto}
+  #doc pre:not(.mermaid) code{background:none; padding:0}
+
+  .loading{color:var(--muted); font-size:14px; padding:40px 0}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="wrap row">
+    <span class="eyebrow">CSP Decline Intelligence · Part 1</span>
+    <span class="badge">Draft PRD</span>
+    <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme" style="margin-left:auto">◑</button>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div id="doc"><p class="loading">Rendering the PRD…</p></div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  (function(){
+    // theme toggle
+    var tb=document.getElementById('themeBtn');
+    tb.addEventListener('click',function(){
+      var r=document.documentElement, cur=r.getAttribute('data-theme');
+      if(!cur){cur=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}
+      r.setAttribute('data-theme', cur==='dark'?'light':'dark');
+    });
+
+    var doc=document.getElementById('doc');
+    var isDark = (document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'))==='dark';
+
+    fetch('./Decline_Reason_Set_PRD.md?cb='+Date.now())
+      .then(function(r){ if(!r.ok) throw new Error('load '+r.status); return r.text(); })
+      .then(function(md){
+        var html = (window.marked ? marked.parse(md) : md);
+        // style the AI-generated markers
+        html = html.replace(/⚠️\s*<em>AI GENERATED — review<\/em>/g,
+                            '<span class="ai">⚠ AI-generated · review</span>');
+        doc.innerHTML = html;
+
+        // convert ```mermaid code blocks into mermaid diagrams
+        doc.querySelectorAll('pre code.language-mermaid').forEach(function(cb){
+          var pre=document.createElement('pre'); pre.className='mermaid';
+          pre.textContent=cb.textContent; cb.parentElement.replaceWith(pre);
+        });
+        if(window.mermaid){
+          try{
+            mermaid.initialize({startOnLoad:false, securityLevel:'strict', theme: isDark?'dark':'neutral'});
+            mermaid.run({querySelector:'#doc .mermaid'});
+          }catch(e){}
+        }
+        doc.classList.add('ready');
+      })
+      .catch(function(e){
+        doc.innerHTML='<p class="loading">Could not load the PRD source ('+e.message+'). '+
+          'View it on <a href="https://github.com/ashish-raj-wiom/decline-intelligence-loop/blob/main/Decline_Reason_Set_PRD.md">GitHub</a>.</p>';
+        doc.classList.add('ready');
+      });
+  })();
+</script>
+</body>
+</html>
