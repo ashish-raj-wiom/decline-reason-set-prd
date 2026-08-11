@@ -74,7 +74,45 @@
 <hr>
 <h2>1. Objective &amp; Definition of Success</h2>
 <p><strong>Objective.</strong> A CSP who won&#39;t install a booking picks the real reason from a list built for his situation — complete enough to fit his case, and unbiased in its order — so he chooses <em>consciously</em> instead of guessing, and the reason we capture is the true one.</p>
-<p><strong>Boundary.</strong> This spec governs the <strong>reason picker</strong> — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a <strong>decline</strong> (before he accepts the booking) and an <strong>install-failure report</strong> (after acceptance, on site). It leaves unchanged: routing / DAS, the nearby-connections assist popup (Part 2), the verification layer (Part 3), Genie serviceability, and the future Availability service action for &quot;technician not available&quot; — all separate specs (AC-REG-1). Reasons already recorded on past events are never altered (AC-REG-2 ⚠️ <em>AI GENERATED — review</em>). Exactly one primary reason is recorded per event (C-04), with an optional price sub-tag and an &quot;Other&quot; free-text.</p>
+<p><strong>Boundary.</strong> This spec governs the <strong>reason picker</strong> — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a <strong>decline</strong> (before he accepts the booking) and an <strong>install-failure report</strong> (after acceptance, on site).</p>
+<p><strong>The reason set (V1).</strong> The same list is served at both capture points (R4) and is config-driven (C-01):</p>
+<table>
+<thead>
+<tr>
+<th>Reason</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Service not available at this location</td>
+<td>kept</td>
+</tr>
+<tr>
+<td>Required device is currently unavailable</td>
+<td>kept</td>
+</tr>
+<tr>
+<td>Customer refused</td>
+<td><strong>new</strong> — clubs the old &quot;Customer is not interested&quot; and &quot;Customer did not agree with the plan price&quot;; carries an optional price sub-tag</td>
+</tr>
+<tr>
+<td>Installation could not be scheduled</td>
+<td>kept</td>
+</tr>
+<tr>
+<td>Could not understand the address</td>
+<td><strong>new</strong></td>
+</tr>
+<tr>
+<td>Technician not available (ladka nahi hai)</td>
+<td><strong>new</strong></td>
+</tr>
+<tr>
+<td>Other — free text</td>
+<td><strong>new</strong>, always shown last</td>
+</tr>
+</tbody></table>
+<p>Removed: <strong>&quot;Network setup is currently not possible&quot;</strong> — folded into &quot;Service not available at this location&quot;.</p>
 <h3>Guardrails — promises that hold on every path</h3>
 <table>
 <thead>
@@ -135,13 +173,6 @@
 <td>100%</td>
 <td>MQ-2</td>
 </tr>
-<tr>
-<td>M3</td>
-<td>Volume of &quot;Other&quot; selections and recurring free-text themes surfaced for taxonomy review</td>
-<td>n/a — new capability</td>
-<td>Reviewable monthly ⚠️ <em>AI GENERATED — review</em></td>
-<td>MQ-3</td>
-</tr>
 </tbody></table>
 <p><strong>Invariant (not a metric):</strong> G1 reason-less decline/failure = 0, zero tolerance. Monitored via MQ-2, not trended.</p>
 <hr>
@@ -170,7 +201,7 @@
 <tr>
 <td>R3</td>
 <td>As a CSP whose reason isn&#39;t in the list, I pick &quot;Other&quot; and type it, so a missing reason still gets captured.</td>
-<td><strong>(a)</strong> Offer &quot;Other&quot;, always last. <strong>(b)</strong> Require non-empty free-text (C-03) when &quot;Other&quot; is chosen. <strong>(c)</strong> Store the free-text for later taxonomy review ⚠️ <em>AI GENERATED — review</em>.</td>
+<td><strong>(a)</strong> Offer &quot;Other&quot;, always last. <strong>(b)</strong> Require non-empty free-text (C-03) when &quot;Other&quot; is chosen. <strong>(c)</strong> Store the free-text.</td>
 <td><strong>(a)</strong> Accept &quot;Other&quot; with empty text. <strong>(b)</strong> Show the free-text back to the CSP as anything but his own input.</td>
 </tr>
 <tr>
@@ -181,8 +212,8 @@
 </tr>
 <tr>
 <td>R5</td>
-<td>As the taxonomy owner, I want to change the reason list without shipping a new app build, so the list can evolve as &quot;Other&quot; surfaces new reasons.</td>
-<td><strong>(a)</strong> Keep the reason list — items, active/retired, order-eligibility — config-driven (C-01). <strong>(b)</strong> A reason retired in config stops appearing on new sheets from that change forward.</td>
+<td>As the taxonomy owner, I want to change the reason list — including any reason&#39;s copy — without shipping a new app build, so the list can evolve.</td>
+<td><strong>(a)</strong> Keep the reason set — items, each reason&#39;s display copy, active/retired, order-eligibility — config-driven (C-01), applied identically at both capture points. <strong>(b)</strong> A reason retired in config stops appearing on new sheets from that change forward.</td>
 <td><strong>(a)</strong> Alter reasons already recorded on past events. <strong>(b)</strong> Show a retired reason on a newly opened sheet.</td>
 </tr>
 <tr>
@@ -193,9 +224,9 @@
 </tr>
 <tr>
 <td>R7</td>
-<td>As Data, I want removed and clubbed reasons to map to their new home, so historical trend lines stay comparable.</td>
-<td>Maintain a mapping: old &quot;Network setup not possible&quot; → the coverage reason &quot;Service not available&quot;; old &quot;Customer not interested&quot; and &quot;Customer did not agree with the plan price&quot; → &quot;Customer refused&quot; (price → the price sub-tag) ⚠️ <em>AI GENERATED — review</em>.</td>
-<td>Break trend continuity by dropping the old reasons with no mapping.</td>
+<td>As Wiom, I want to know exactly what the CSP saw when he chose, so his choice is auditable and position effects are measurable.</td>
+<td>Record, per event, the <strong>exact set of reasons shown and their order</strong>, retrievable later.</td>
+<td>Record only the chosen reason with no trace of what was shown.</td>
 </tr>
 </tbody></table>
 <hr>
@@ -234,7 +265,7 @@
 <td>Submit with a listed reason (not Other, not Customer refused)</td>
 <td>Exactly one primary reason selected (R1b)</td>
 <td>Recorded</td>
-<td>Reason-capture stored: reason + capture point (decline / install-failure); the display order used is logged (MQ-1).</td>
+<td>Reason-capture stored: reason + capture point (decline / install-failure); the exact set of reasons shown and their order is recorded (R7, MQ-1, MQ-7).</td>
 </tr>
 <tr>
 <td>T2</td>
@@ -242,7 +273,7 @@
 <td>Submit with &quot;Customer refused&quot;</td>
 <td>One primary reason selected (R1b)</td>
 <td>Recorded</td>
-<td>Stored as &quot;Customer refused&quot; with the optional price sub-tag if chosen (R2).</td>
+<td>Stored as &quot;Customer refused&quot; with the optional price sub-tag if chosen (R2); reasons shown + order recorded (R7).</td>
 </tr>
 <tr>
 <td>T3</td>
@@ -250,7 +281,7 @@
 <td>Submit with &quot;Other&quot;</td>
 <td>Free-text non-empty (R3b, C-03)</td>
 <td>Recorded</td>
-<td>Stored as &quot;Other&quot; + the free-text; text queued for taxonomy review (R3c) ⚠️ <em>AI GENERATED — review</em>.</td>
+<td>Stored as &quot;Other&quot; + the free-text (R3c); reasons shown + order recorded (R7).</td>
 </tr>
 <tr>
 <td>T4</td>
@@ -346,9 +377,9 @@
 </thead>
 <tbody><tr>
 <td>C-01</td>
-<td>Reason list — items, active/retired, order-eligibility, price sub-tag (governs the sheet, R1a/R4/R5)</td>
-<td>V1 list: Service not available at this location · Required device is currently unavailable · Customer refused (+ optional price sub-tag) · Installation could not be scheduled · Could not understand the address · Technician not available (ladka nahi hai) · Other</td>
-<td>Editable via config (add / remove / reorder-eligibility)</td>
+<td>Reason set — the items, <strong>each reason&#39;s display copy</strong>, active/retired, order-eligibility, price sub-tag; applied identically to decline and install-failure (governs the sheet, R1a/R4/R5)</td>
+<td>The V1 reason set in §1</td>
+<td>Editable via config — add / remove / reorder-eligibility / <strong>change any reason&#39;s copy</strong> — with no app release, effective at both capture points</td>
 <td>Product</td>
 </tr>
 <tr>
@@ -394,24 +425,19 @@
 <td>M2 · G1 invariant</td>
 </tr>
 <tr>
-<td>MQ-3</td>
-<td>How many &quot;Other&quot; selections were made, and what recurring themes appear in the free-text?</td>
-<td>M3 (taxonomy evolution)</td>
-</tr>
-<tr>
 <td>MQ-4</td>
 <td>Of &quot;Customer refused&quot; selections, what share carried the price sub-tag?</td>
 <td>R2 · G4</td>
 </tr>
 <tr>
-<td>MQ-5</td>
-<td>What is the reason distribution across both capture points after the change, mapped to the pre-change trend?</td>
-<td>R7 (continuity) ⚠️ <em>AI GENERATED — review</em></td>
-</tr>
-<tr>
 <td>MQ-6</td>
 <td>Do the decline sheet and the install-failure sheet serve the identical reason set in production?</td>
 <td>G3 · R4</td>
+</tr>
+<tr>
+<td>MQ-7</td>
+<td>For any given decline / install-failure, which reasons were shown to the CSP and in what order?</td>
+<td>R7 · M1</td>
 </tr>
 </tbody></table>
 <hr>
@@ -446,15 +472,21 @@
 </tr>
 <tr>
 <td>AC-REC-4</td>
-<td><strong>Given</strong> the CSP selects &quot;Other&quot;, <strong>When</strong> he types &quot;gali me ladai ho rahi thi, ja nahi paya&quot; and submits, <strong>Then</strong> it is recorded with reason &quot;Other&quot; and that free-text, and the text is queued for taxonomy review.</td>
+<td><strong>Given</strong> the CSP selects &quot;Other&quot;, <strong>When</strong> he types &quot;gali me ladai ho rahi thi, ja nahi paya&quot; and submits, <strong>Then</strong> it is recorded with reason &quot;Other&quot; and that free-text stored.</td>
 <td>R3a · R3b · R3c · T3</td>
-<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+<td>Settled</td>
 </tr>
 <tr>
 <td>AC-REC-5</td>
 <td><strong>Given</strong> the CSP selects &quot;Technician not available (ladka nahi hai)&quot;, <strong>When</strong> he submits, <strong>Then</strong> it is recorded as that reason and <strong>no</strong> availability / pause-installs action fires.</td>
 <td>R6 · T1</td>
 <td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+<tr>
+<td>AC-REC-6</td>
+<td><strong>Given</strong> a decline sheet that showed, in order, &quot;Customer refused · Service not available · Required device unavailable · Installation could not be scheduled · Could not understand the address · Technician not available · Other&quot;, <strong>When</strong> the CSP selects the 2nd item and submits, <strong>Then</strong> the recorded event carries that exact shown list and order alongside the chosen reason, retrievable later.</td>
+<td>R7 · T1 · MQ-7</td>
+<td>Settled</td>
 </tr>
 </tbody></table>
 <h3>BLK — Submission blocked (T4)</h3>
@@ -492,8 +524,8 @@
 </thead>
 <tbody><tr>
 <td>AC-WF-1</td>
-<td><strong>Given</strong> a CSP declining a booking, with the reason sheet loaded from config C-01, <strong>When</strong> he is shown the per-task randomised list (&quot;Other&quot; last), selects &quot;Service not available at this location&quot;, and submits, <strong>Then</strong> the decline is recorded with that one reason, the display order used is logged, and downstream routing runs exactly as before.</td>
-<td>R1a · R1b · R1c · T1 · G1 · G2 · §1 Boundary</td>
+<td><strong>Given</strong> a CSP declining a booking, with the reason sheet loaded from config C-01, <strong>When</strong> he is shown the per-task randomised list (&quot;Other&quot; last), selects &quot;Service not available at this location&quot;, and submits, <strong>Then</strong> the decline is recorded with that one reason and the exact reasons shown and their order are recorded.</td>
+<td>R1a · R1b · R1c · T1 · G1 · G2 · R7</td>
 <td>Settled</td>
 </tr>
 </tbody></table>
@@ -541,6 +573,12 @@
 <td><strong>Given</strong> Product adds a new reason in config, <strong>When</strong> the sheet next renders, <strong>Then</strong> the new reason appears in the randomised list (before &quot;Other&quot;).</td>
 <td>R5a · C-01</td>
 <td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+<tr>
+<td>AC-CFG-3</td>
+<td><strong>Given</strong> Product changes the copy of &quot;Customer refused&quot; to &quot;Grahak ne mana kar diya&quot; in config, <strong>When</strong> a CSP opens a new reason sheet at either a decline or an install-failure, <strong>Then</strong> the updated copy shows at both — with no app release.</td>
+<td>R5a · C-01</td>
+<td>Settled</td>
 </tr>
 </tbody></table>
 <h3>RACE — Races</h3>
@@ -600,29 +638,6 @@
 <td>Settled ⚠️ <em>AI GENERATED — review</em></td>
 </tr>
 </tbody></table>
-<h3>REG — Regression (§1 Boundary)</h3>
-<table>
-<thead>
-<tr>
-<th>AC</th>
-<th>Given / When / Then</th>
-<th>Verifies</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>AC-REG-1</td>
-<td><strong>Given</strong> a decline recorded through the new reason set, <strong>When</strong> downstream routing / DAS runs, <strong>Then</strong> routing behaviour is exactly as it is today — this spec changes only what reason is captured, not what happens next.</td>
-<td>§1 Boundary</td>
-<td>Settled</td>
-</tr>
-<tr>
-<td>AC-REG-2</td>
-<td><strong>Given</strong> declines recorded before this change (e.g. old &quot;Network setup not possible&quot;), <strong>When</strong> the new list ships, <strong>Then</strong> those historical records are unchanged and remain mapped to their new home for trend continuity (R7).</td>
-<td>§1 Boundary · R7</td>
-<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
-</tr>
-</tbody></table>
 <hr>
 <h2>8. Glossary</h2>
 <table>
@@ -650,12 +665,12 @@
 </tr>
 <tr>
 <td>Other</td>
-<td>The catch-all reason, always shown last, requiring non-empty free-text (R3). Its text is the raw input for evolving the list (M3).</td>
+<td>The catch-all reason, always shown last, requiring non-empty free-text (R3).</td>
 <td>—</td>
 </tr>
 <tr>
-<td>Reason list</td>
-<td><strong>Canonical definition:</strong> the config-driven set of reasons (items, active/retired, order-eligibility, price sub-tag) served to the sheet; changeable without an app release (C-01, R5).</td>
+<td>Reason set</td>
+<td><strong>Canonical definition:</strong> the config-driven set of reasons — items, each reason&#39;s display copy, active/retired, order-eligibility, price sub-tag — served to the sheet; changeable without an app release (C-01, R5). The V1 members are listed in §1.</td>
 <td>Product</td>
 </tr>
 <tr>
@@ -680,7 +695,7 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>Serve a config-driven reason list at both capture points, randomised per task with &quot;Other&quot; last.</td>
+<td>Serve a config-driven reason set at both capture points, randomised per task with &quot;Other&quot; last.</td>
 <td>R1 · R4 · C-01 · C-02 · G2 · G3</td>
 </tr>
 <tr>
@@ -688,20 +703,12 @@
 <td>R1b · R2 · R3 · C-04 · G1</td>
 </tr>
 <tr>
-<td>Change the reason list — add / remove / reorder-eligibility — without an app release, effective on next render, without touching past records.</td>
+<td>Change the reason set — add / remove / reorder-eligibility / edit any reason&#39;s copy — without an app release, effective at both capture points on next render, without touching past records.</td>
 <td>R5 · C-01</td>
 </tr>
 <tr>
-<td>Log the display order used per event, to test that selection share is position-independent.</td>
-<td>M1 · MQ-1 · G2</td>
-</tr>
-<tr>
-<td>Preserve historical reasons and map removed / clubbed reasons to their new home for trend continuity.</td>
-<td>R7 · MQ-5</td>
-</tr>
-<tr>
-<td>Queue &quot;Other&quot; free-text for taxonomy review.</td>
-<td>R3c · M3 · MQ-3</td>
+<td>Record, per event, the exact set of reasons shown and their order — retrievable later.</td>
+<td>R7 · M1 · MQ-1 · MQ-7 · G2</td>
 </tr>
 </tbody></table>
 <hr>
@@ -730,24 +737,9 @@
 <td>Inferred: today&#39;s list is mandatory single-select. Confirm the current capture is truly reason-mandatory.</td>
 </tr>
 <tr>
-<td>§1 M3 target</td>
-<td>&quot;Reviewable monthly&quot;</td>
-<td>Cadence for taxonomy review not stated.</td>
-</tr>
-<tr>
-<td>§2 R3c</td>
-<td>Store &quot;Other&quot; free-text for taxonomy review</td>
-<td>Storing/mining free-text is implied by the self-learning intent but not stated for Part 1. Confirm it is in scope here vs Part 3.</td>
-</tr>
-<tr>
 <td>§2 R6</td>
 <td>&quot;No availability action in V1&quot;</td>
 <td>From the brief (handoff out of scope); the explicit V1 &quot;capture only, no action&quot; behaviour is inferred.</td>
-</tr>
-<tr>
-<td>§2 R7 + MQ-5 + AC-REG-2</td>
-<td>Historical mapping / trend continuity for removed &amp; clubbed reasons</td>
-<td>Not raised by the PM; added so the change doesn&#39;t break reporting. Confirm it is wanted and confirm the exact old→new mapping.</td>
 </tr>
 <tr>
 <td>§3b T5 + AC-DUP-1</td>
@@ -775,9 +767,27 @@
 <td>Min-length rule not specified; non-empty is the minimal safe default.</td>
 </tr>
 <tr>
-<td>§7 AC-REC-4/5, AC-CFG-2, AC-RACE-1, AC-DUP-1, AC-BV-2, AC-REG-2</td>
+<td>§7 AC-REC-5, AC-CFG-2, AC-RACE-1, AC-DUP-1, AC-BV-2</td>
 <td>Marked ACs</td>
 <td>Each rests on an inferred rule/behaviour above; they test decisions the PM has not yet confirmed.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Overrides</h2>
+<table>
+<thead>
+<tr>
+<th>Rule overridden</th>
+<th>What was done instead</th>
+<th>Rationale</th>
+<th>Approved by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>§7 requires a Regression (REG) AC type</td>
+<td>No REG ACs</td>
+<td>This spec is a self-contained input layer with no downstream behaviour to regress; the only &quot;unchanged&quot; promise — past records are untouched when config changes — is covered by AC-CFG-1 (R5 MUST NOT).</td>
+<td>Ashish Raj (PM)</td>
 </tr>
 </tbody></table>
 
