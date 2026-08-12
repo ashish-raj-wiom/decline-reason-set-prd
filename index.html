@@ -65,7 +65,7 @@
 <td><strong>Sign-off</strong> — Pending</td>
 </tr>
 <tr>
-<td><strong>Version</strong> — v0.3 · 11 Aug 2026</td>
+<td><strong>Version</strong> — v0.4 · 11 Aug 2026</td>
 <td><strong>Consulted — CSP App</strong> — TBD ⚠️ <em>AI GENERATED — review</em></td>
 <td><strong>Consulted — Data/Analytics</strong> — TBD ⚠️ <em>AI GENERATED — review</em></td>
 <td><strong>Consulted — DAS / Quality</strong> — TBD ⚠️ <em>AI GENERATED — review</em></td>
@@ -75,7 +75,7 @@
 <h2>1. Objective &amp; Definition of Success</h2>
 <p><strong>Objective.</strong> A CSP who won&#39;t install a booking picks the real reason from a list built for his situation — complete enough to fit his case, and unbiased in its order — so he chooses <em>consciously</em> instead of guessing, and the reason we capture is the true one.</p>
 <p><strong>Boundary.</strong> This spec governs the <strong>reason picker</strong> — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a <strong>decline</strong> (before he accepts the booking) and an <strong>install-failure report</strong> (after acceptance, on site).</p>
-<p><strong>The reason set (V1).</strong> The CSP-facing copy below (English and Hindi) is the V1 default, served identically at both capture points (R4) and config-driven — copy included (C-01). Sheet header: <em>&quot;Why can&#39;t you take this job? — Telling us the right reason helps us send you better work.&quot;</em></p>
+<p><strong>The reason set (V1).</strong> The CSP-facing copy below (English and Hindi), served identically at both capture points (R4). <strong>The copy is part of this spec</strong> — Product owns it, and it is editable via config (C-01). Sheet header: <em>&quot;Why can&#39;t you take this job? — Telling us the right reason helps us send you better work.&quot;</em></p>
 <table>
 <thead>
 <tr>
@@ -102,7 +102,7 @@
 <tr>
 <td>I don&#39;t have a device right now</td>
 <td>नेटबॉक्स अभी उपलब्ध नहीं है</td>
-<td>netbox / device unavailable</td>
+<td>device / netbox unavailable</td>
 </tr>
 <tr>
 <td>No one free to install it</td>
@@ -110,12 +110,12 @@
 <td>technician / labour unavailable</td>
 </tr>
 <tr>
-<td>Another reason <em>(free text)</em></td>
+<td>Another reason <em>(free text, always last)</em></td>
 <td>कोई और वजह</td>
-<td>anything else — the CSP types it; always shown last</td>
+<td>anything else — the CSP types it</td>
 </tr>
 </tbody></table>
-<p><strong>Changed from today:</strong> removed <strong>&quot;Network setup is currently not possible&quot;</strong>, <strong>&quot;Customer did not agree with the plan price&quot;</strong> and <strong>&quot;Installation could not be scheduled&quot;</strong> — dropped, not merged into any other reason. The remaining reasons were reworded into plain CSP language, and <strong>&quot;I couldn&#39;t understand the address&quot;</strong>, <strong>&quot;No one free to install it&quot;</strong> and the free-text <strong>&quot;Another reason&quot;</strong> were added.</p>
+<p><strong>How the set changes (add-only).</strong> The underlying reason list only <strong>grows</strong> — no reason is ever removed from the system. We <strong>add</strong> three reasons — <em>&quot;I couldn&#39;t understand the address&quot;</em>, <em>&quot;No one free to install it&quot;</em>, and the free-text <em>&quot;Another reason&quot;</em> — and <strong>reword</strong> the copy of the kept ones. The picker then <strong>shows only the six above</strong> (C-01); any previously-shown reason not in this list stays in the system, just no longer shown to the CSP. Any new reason must also be recognised by the downstream services that read reasons, so they consume it as expected (G5).</p>
 <h3>Guardrails — promises that hold on every path</h3>
 <table>
 <thead>
@@ -149,6 +149,18 @@
 <td><strong>No downstream impact</strong></td>
 <td>Changing or reading the reason set never breaks or alters the behaviour of DAS, Quality, or any service that consumes these reasons.</td>
 <td>R2 · AC-REG-1 · MQ-3</td>
+</tr>
+<tr>
+<td>G5</td>
+<td><strong>Decline / failure works end-to-end</strong></td>
+<td>Once a CSP marks a decline or install-failure, the submission completes and DAS, CL OS and every downstream service receive it and behave as expected.</td>
+<td>R1 · R2 · AC-REG-2 · MQ-6</td>
+</tr>
+<tr>
+<td>G6</td>
+<td><strong>Every decline is understandable downstream</strong></td>
+<td>Each logged decline / install-failure carries a stable reason identifier that analytics, product, Genie, DAS, CL and any downstream team can map to exactly why the CSP declined.</td>
+<td>R8 · AC-REC-1 · MQ-7</td>
 </tr>
 </tbody></table>
 <h3>Success metrics</h3>
@@ -215,9 +227,9 @@
 </tr>
 <tr>
 <td>R5</td>
-<td>As the taxonomy owner, I want to change the reason set — including any reason&#39;s copy — without shipping a new app build, so the list can evolve.</td>
-<td><strong>(a)</strong> Keep the reason set — items, each reason&#39;s display copy, active/retired, order-eligibility — config-driven (C-01), applied identically at both capture points. <strong>(b)</strong> A reason retired in config stops appearing on new sheets from that change forward.</td>
-<td><strong>(a)</strong> Alter reasons already recorded on past events. <strong>(b)</strong> Show a retired reason on a newly opened sheet.</td>
+<td>As the taxonomy owner, I want to change which reasons are shown — and any reason&#39;s copy — without shipping a new app build, so the list can evolve.</td>
+<td><strong>(a)</strong> Keep the shown-reason set — which reasons appear, each reason&#39;s display copy, order-eligibility — config-driven (C-01), applied identically at both capture points. <strong>(b)</strong> A reason hidden in config stops appearing on new sheets from that change forward. <strong>(c)</strong> The reason list is add-only — reasons may be added; none is ever removed.</td>
+<td><strong>(a)</strong> Remove an existing reason from the underlying list. <strong>(b)</strong> Alter reasons already recorded on past events. <strong>(c)</strong> Show a hidden reason on a newly opened sheet.</td>
 </tr>
 <tr>
 <td>R6</td>
@@ -230,6 +242,12 @@
 <td>As Wiom, I want to know exactly what the CSP saw when he chose, so his choice is auditable and position effects are measurable.</td>
 <td>Record, per event, the <strong>exact set of reasons shown and their order</strong>, retrievable later.</td>
 <td>Record only the chosen reason with no trace of what was shown.</td>
+</tr>
+<tr>
+<td>R8</td>
+<td>As analytics / product / Genie / DAS / CL and any downstream team, I want every logged decline / install-failure to carry a stable reason identifier, so I can tell exactly <em>why</em> the CSP declined.</td>
+<td><strong>(a)</strong> Record each reason as a <strong>stable identifier</strong> (its values defined by tech) that stays the same even when the display copy changes. <strong>(b)</strong> Map each identifier one-to-one to a single, well-defined &quot;why&quot;.</td>
+<td><strong>(a)</strong> Use the (changeable) display copy as the downstream signal. <strong>(b)</strong> Log a reason no downstream team can interpret.</td>
 </tr>
 </tbody></table>
 <hr>
@@ -246,7 +264,7 @@
     D -- "Yes" --> T2["T2 — record with Other + free-text"]
     C -- "No" --> T1["T1 — record with the selected reason"]
 </pre>
-<p><strong>Precedence:</strong> the reason set is read when the sheet is <strong>rendered</strong>; a reason valid at render stays valid for that submission even if config retires it before the CSP taps submit (AC-RACE-1 ⚠️ <em>AI GENERATED — review</em>).</p>
+<p><strong>Precedence:</strong> the reason set is read when the sheet is <strong>rendered</strong>; a reason valid at render stays valid for that submission even if config hides it before the CSP taps submit (AC-RACE-1 ⚠️ <em>AI GENERATED — review</em>).</p>
 <h3>3b. State transition table — canon</h3>
 <p>Lifecycle of a <strong>reason-capture</strong> (created when a CSP submits a decline or an install-failure report; it attaches the stated reason to that event). The decline / install-failure state machine itself — the ES candidate&#39;s <code>DECLINED</code> and <code>INSTALLATION_REPORTED_FAILED</code> transitions — is out of scope; this spec governs only the reason attached to those events.</p>
 <table>
@@ -298,7 +316,7 @@
 <p><strong>Experience intent:</strong> the CSP tells us why in one honest tap — the list is short, neutral, and never nudges him toward one answer. ⚠️ <em>AI GENERATED — review</em></p>
 <p><strong>Master design file:</strong> reason sheet designed — V1 mockups approved (English + Hindi); Figma link TBD. ⚠️ <em>AI GENERATED — review</em></p>
 <h3>Reason sheet (CSP app) — decline &amp; install-failure</h3>
-<p><strong>Header (design copy):</strong> title <em>&quot;Why can&#39;t you take this job?&quot;</em>, subtitle <em>&quot;Telling us the right reason helps us send you better work.&quot;</em>
+<p><strong>Header (spec-owned copy, §1):</strong> title <em>&quot;Why can&#39;t you take this job?&quot;</em>, subtitle <em>&quot;Telling us the right reason helps us send you better work.&quot;</em>
 <strong>States:</strong> default (list shown, none selected) · reason selected · &quot;Another reason&quot; selected (inline text box shown) · submit blocked (no reason, or &quot;Another reason&quot; with empty text)
 <strong>Freshness:</strong> the list reflects the current config (C-01) on open.</p>
 <table>
@@ -336,7 +354,7 @@
 </tr>
 </tbody></table>
 <h3>Reason-config console (internal) — design TBD ⚠️ <em>AI GENERATED — review</em></h3>
-<p><strong>States:</strong> list of reasons (active / retired) · edit
+<p><strong>States:</strong> list of reasons (shown / hidden) · edit
 <strong>Freshness:</strong> changes take effect on the next sheet render (R5b)</p>
 <table>
 <thead>
@@ -349,10 +367,10 @@
 <tbody><tr>
 <td>Field — reason set</td>
 <td>config (C-01)</td>
-<td>shows active and retired reasons and their copy</td>
+<td>shows all reasons — shown and hidden — and their copy</td>
 </tr>
 <tr>
-<td>Action — add / retire / reorder-eligibility / edit copy</td>
+<td>Action — add / show / hide / reorder-eligibility / edit copy</td>
 <td>—</td>
 <td>edits C-01; no app release (R5a); does not alter past records (R5 MUST NOT)</td>
 </tr>
@@ -371,9 +389,9 @@
 </thead>
 <tbody><tr>
 <td>C-01</td>
-<td>Reason set — the items, <strong>each reason&#39;s display copy</strong>, active/retired, order-eligibility; applied identically to decline and install-failure (governs the sheet, R1a/R4/R5)</td>
-<td>The V1 reason set in §1</td>
-<td>Editable via config — add / remove / reorder-eligibility / <strong>change any reason&#39;s copy</strong> — with no app release, effective at both capture points</td>
+<td>Shown-reason set — which reasons appear, <strong>each reason&#39;s display copy</strong>, order-eligibility; applied identically to decline and install-failure (governs the sheet, R1a/R4/R5)</td>
+<td>The V1 six in §1</td>
+<td>Editable via config — show / hide a reason, reorder-eligibility, <strong>change any reason&#39;s copy</strong> — with no app release, effective at both capture points; the underlying list is add-only (reasons added, never removed)</td>
 <td>Product</td>
 </tr>
 <tr>
@@ -433,10 +451,20 @@
 <td>For any given decline / install-failure, which reasons were shown to the CSP and in what order?</td>
 <td>R7 · M1</td>
 </tr>
+<tr>
+<td>MQ-6</td>
+<td>Are all declines / install-failures — including those with newly-added reasons — accepted and processed downstream by DAS and CL OS as expected?</td>
+<td>G5</td>
+</tr>
+<tr>
+<td>MQ-7</td>
+<td>For every logged decline / install-failure, can a downstream team map its reason identifier to a single, unambiguous &quot;why&quot;?</td>
+<td>G6 · R8</td>
+</tr>
 </tbody></table>
 <hr>
 <h2>7. Acceptance Criteria</h2>
-<h3>REC — Reason recorded (T1, T2)</h3>
+<h3>REC — Reason recorded, one per reason type (T1, T2)</h3>
 <table>
 <thead>
 <tr>
@@ -448,30 +476,42 @@
 </thead>
 <tbody><tr>
 <td>AC-REC-1</td>
-<td><strong>Given</strong> a CSP declining a booking in zone_3289, with the sheet showing 5 reasons + &quot;Another reason&quot;, <strong>When</strong> he selects &quot;The cable can&#39;t reach this place&quot; and submits, <strong>Then</strong> the decline is recorded with that one reason, capture point = decline, and the exact reasons shown and their order are recorded.</td>
-<td>R1a · R1b · T1 · G1 · R7</td>
+<td><strong>Given</strong> a CSP declining a booking, with the sheet showing the 5 reasons + &quot;Another reason&quot;, <strong>When</strong> he selects <strong>&quot;The cable can&#39;t reach this place&quot;</strong> and submits, <strong>Then</strong> it is recorded with that reason&#39;s stable identifier, capture point = decline, and any downstream team (analytics, Genie, DAS, CL) reads it unambiguously as <em>not serviceable / coverage</em>.</td>
+<td>R1 · R8 · T1 · G1 · G6</td>
 <td>Settled</td>
 </tr>
 <tr>
 <td>AC-REC-2</td>
-<td><strong>Given</strong> the reason sheet, <strong>When</strong> the CSP selects &quot;The customer said no&quot; and submits, <strong>Then</strong> it is recorded as that reason — a first-class list item, not merged into any other.</td>
-<td>R1a · T1</td>
+<td><strong>Given</strong> the reason sheet, <strong>When</strong> the CSP selects <strong>&quot;I couldn&#39;t understand the address&quot;</strong> and submits, <strong>Then</strong> it is recorded with that reason&#39;s stable identifier and reads downstream as <em>address unclear</em>.</td>
+<td>R1 · R8 · T1 · G6</td>
 <td>Settled</td>
 </tr>
 <tr>
 <td>AC-REC-3</td>
-<td><strong>Given</strong> the CSP selects &quot;Another reason&quot;, <strong>When</strong> the inline text box appears and he types &quot;gali me ladai ho rahi thi, ja nahi paya&quot; and submits, <strong>Then</strong> it is recorded as &quot;Another reason&quot; with that free-text stored.</td>
-<td>R3a · R3b · R3c · T2</td>
+<td><strong>Given</strong> the reason sheet, <strong>When</strong> the CSP selects <strong>&quot;The customer said no&quot;</strong> and submits, <strong>Then</strong> it is recorded with that reason&#39;s stable identifier — a first-class reason, not merged into any other — and reads downstream as <em>customer declined</em>.</td>
+<td>R1 · R8 · T1 · G6</td>
 <td>Settled</td>
 </tr>
 <tr>
 <td>AC-REC-4</td>
-<td><strong>Given</strong> the CSP selects &quot;No one free to install it&quot;, <strong>When</strong> he submits, <strong>Then</strong> it is recorded as that reason and <strong>no</strong> availability / pause-installs action fires.</td>
-<td>R6 · T1</td>
-<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+<td><strong>Given</strong> the reason sheet, <strong>When</strong> the CSP selects <strong>&quot;I don&#39;t have a device right now&quot;</strong> and submits, <strong>Then</strong> it is recorded with that reason&#39;s stable identifier and reads downstream as <em>device unavailable</em>.</td>
+<td>R1 · R8 · T1 · G6</td>
+<td>Settled</td>
 </tr>
 <tr>
 <td>AC-REC-5</td>
+<td><strong>Given</strong> the reason sheet, <strong>When</strong> the CSP selects <strong>&quot;No one free to install it&quot;</strong> and submits, <strong>Then</strong> it is recorded with that reason&#39;s stable identifier and reads downstream as <em>technician / labour unavailable</em> — and <strong>no</strong> availability / pause-installs action fires in V1.</td>
+<td>R6 · R8 · T1 · G6</td>
+<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+<tr>
+<td>AC-REC-6</td>
+<td><strong>Given</strong> the CSP selects <strong>&quot;Another reason&quot;</strong>, <strong>When</strong> the inline text box appears and he types &quot;gali me ladai ho rahi thi, ja nahi paya&quot; and submits, <strong>Then</strong> it is recorded with the &quot;Another reason&quot; identifier plus his free-text, and reads downstream as <em>other</em> with the typed detail.</td>
+<td>R3 · R8 · T2 · G6</td>
+<td>Settled</td>
+</tr>
+<tr>
+<td>AC-REC-7</td>
 <td><strong>Given</strong> a decline sheet that showed, in order, &quot;The cable can&#39;t reach this place · I couldn&#39;t understand the address · The customer said no · I don&#39;t have a device right now · No one free to install it · Another reason&quot;, <strong>When</strong> the CSP selects the 3rd item and submits, <strong>Then</strong> the recorded event carries that exact shown list and order alongside the chosen reason, retrievable later.</td>
 <td>R7 · T1 · MQ-5</td>
 <td>Settled</td>
@@ -552,7 +592,7 @@
 </thead>
 <tbody><tr>
 <td>AC-CFG-1</td>
-<td><strong>Given</strong> Product retires &quot;I couldn&#39;t understand the address&quot; in config, <strong>When</strong> a CSP opens a new reason sheet, <strong>Then</strong> that reason no longer appears — with no app release — and events that already recorded it are unchanged.</td>
+<td><strong>Given</strong> Product hides &quot;I couldn&#39;t understand the address&quot; from the picker in config, <strong>When</strong> a CSP opens a new reason sheet, <strong>Then</strong> that reason no longer appears — with no app release — the reason still exists in the underlying list, and events that already recorded it are unchanged.</td>
 <td>R5a · R5b · R5(MUST NOT)</td>
 <td>Settled</td>
 </tr>
@@ -581,7 +621,7 @@
 </thead>
 <tbody><tr>
 <td>AC-RACE-1</td>
-<td><strong>Given</strong> a CSP opened the sheet while &quot;I couldn&#39;t understand the address&quot; was active, <strong>When</strong> config retires it before he taps submit and he had selected it, <strong>Then</strong> the submission still records that reason (valid at render), and the next sheet render omits it.</td>
+<td><strong>Given</strong> a CSP opened the sheet while &quot;I couldn&#39;t understand the address&quot; was active, <strong>When</strong> config hides it before he taps submit and he had selected it, <strong>Then</strong> the submission still records that reason (valid at render), and the next sheet render omits it.</td>
 <td>§3a precedence</td>
 <td>Settled ⚠️ <em>AI GENERATED — review</em></td>
 </tr>
@@ -638,8 +678,14 @@
 </thead>
 <tbody><tr>
 <td>AC-REG-1</td>
-<td><strong>Given</strong> DAS and Quality both read decline / install-failure reasons, <strong>When</strong> the reason set changes — &quot;Customer did not agree with the plan price&quot; removed, &quot;No one free to install it&quot; added, and one reason&#39;s copy edited — <strong>Then</strong> both services keep working exactly as before: no errors, and no change to their behaviour on the reasons they still consume.</td>
+<td><strong>Given</strong> DAS and Quality both read decline / install-failure reasons, <strong>When</strong> a new reason is added and one reason&#39;s copy is edited, <strong>Then</strong> both services keep working exactly as before: no errors, and no change to their behaviour on the reasons they still consume.</td>
 <td>R2 · G4 · MQ-3</td>
+<td>Settled</td>
+</tr>
+<tr>
+<td>AC-REG-2</td>
+<td><strong>Given</strong> a CSP marks an install-failure with any reason (including a newly-added one), <strong>When</strong> he submits, <strong>Then</strong> the failure is accepted and recorded, DAS re-routes the booking, and CL OS processes the failure — the whole flow completes and every downstream service behaves as expected.</td>
+<td>R1 · R2 · G5 · MQ-6</td>
 <td>Settled</td>
 </tr>
 </tbody></table>
@@ -670,7 +716,7 @@
 </tr>
 <tr>
 <td>Reason set</td>
-<td><strong>Canonical definition:</strong> the config-driven set of reasons — items, each reason&#39;s display copy, active/retired, order-eligibility — served to the sheet; changeable without an app release (C-01, R5). The V1 members and copy are listed in §1.</td>
+<td><strong>Canonical definition:</strong> the config-driven set of reasons — which reasons are shown, each reason&#39;s display copy, order-eligibility — served to the sheet; changeable without an app release (C-01, R5). The V1 members and copy are listed in §1.</td>
 <td>Product</td>
 </tr>
 <tr>
@@ -713,6 +759,14 @@
 <tr>
 <td>Keep the reason contract stable and backward-compatible, so downstream consumers (DAS, Quality, any reader) are unaffected when the set changes.</td>
 <td>R2 · G4 · MQ-3</td>
+</tr>
+<tr>
+<td>Attach a stable reason identifier (its values tech-defined) to every logged decline / failure, so downstream teams map it to the &quot;why&quot;.</td>
+<td>R8 · G6 · MQ-7</td>
+</tr>
+<tr>
+<td>Carry every completed decline / install-failure downstream so DAS and CL OS act on it as expected.</td>
+<td>R1 · R2 · G5 · MQ-6</td>
 </tr>
 </tbody></table>
 <hr>
@@ -757,8 +811,8 @@
 </tr>
 <tr>
 <td>§4</td>
-<td>Design links = TBD (Solutions team); Reason-config console screen; experience-intent line</td>
-<td>UX not yet designed; the internal config console is inferred from the config-driven decision.</td>
+<td>Figma link = TBD; Reason-config console screen; experience-intent line</td>
+<td>Reason-sheet mockups are approved (EN + HI); the Figma link and the internal config console are still to be confirmed.</td>
 </tr>
 <tr>
 <td>§5 C-02</td>
@@ -771,7 +825,7 @@
 <td>Min-length rule not specified; non-empty is the minimal safe default.</td>
 </tr>
 <tr>
-<td>§7 AC-REC-4, AC-CFG-2, AC-RACE-1, AC-DUP-1, AC-BV-2</td>
+<td>§7 AC-REC-5, AC-CFG-2, AC-RACE-1, AC-DUP-1, AC-BV-2</td>
 <td>Marked ACs</td>
 <td>Each rests on an inferred rule/behaviour above; they test decisions the PM has not yet confirmed.</td>
 </tr>
