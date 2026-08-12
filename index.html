@@ -74,7 +74,7 @@
 <hr>
 <h2>1. Objective &amp; Definition of Success</h2>
 <p><strong>Objective.</strong> A CSP who won&#39;t install a booking picks the real reason from a list built for his situation — complete enough to fit his case, and unbiased in its order — so he chooses <em>consciously</em> instead of guessing, and the reason we capture is the true one.</p>
-<p><strong>Boundary.</strong> This spec governs the <strong>reason picker</strong> — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a <strong>decline</strong> (before he accepts the booking) and an <strong>install-failure report</strong> (after acceptance, on site).</p>
+<p><strong>Boundary.</strong> This spec governs the <strong>reason picker</strong> — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a <strong>decline</strong> (before he accepts the booking) and an <strong>install-failure report</strong> (any time after acceptance).</p>
 <p><strong>The reason set (V1).</strong> The CSP-facing copy below (English and Hindi), served identically at both capture points (R4). <strong>The copy is part of this spec</strong> — Product owns it, and it is editable via config (C-01). Sheet header: <em>&quot;Why can&#39;t you take this job? — Telling us the right reason helps us send you better work.&quot;</em></p>
 <blockquote>
 <p>⚑ <strong>Exact copy comes from Figma.</strong> The English and Hindi text below is <strong>indicative</strong>. The exact, final wording — for every reason and the sheet header — <strong>must be picked directly from the Figma file (§4)</strong>, which is the source of truth for all copy.</p>
@@ -543,7 +543,7 @@
 </tr>
 <tr>
 <td>AC-WF-2</td>
-<td><strong>Given</strong> the same reason set (C-01), <strong>When</strong> one CSP <strong>declines a booking before accepting it</strong> and picks &quot;The cable can&#39;t reach this place&quot;, and another CSP <strong>reports an install-failure on site after accepting</strong> and picks &quot;I don&#39;t have a device right now&quot;, <strong>Then</strong> both are recorded with exactly one reason from the identical set — each stamped with its capture point (decline vs install-failure report) — and each flows downstream as expected.</td>
+<td><strong>Given</strong> the same reason set (C-01), <strong>When</strong> one CSP <strong>declines a booking before accepting it</strong> and picks &quot;The cable can&#39;t reach this place&quot;, and another CSP <strong>reports an install-failure after accepting</strong> and picks &quot;I don&#39;t have a device right now&quot;, <strong>Then</strong> both are recorded with exactly one reason from the identical set — each stamped with its capture point (decline vs install-failure report) — and each flows downstream as expected.</td>
 <td>R1 · R4 · T1 · G1 · G3 · G5</td>
 <td>Settled</td>
 </tr>
@@ -709,7 +709,7 @@
 </tr>
 <tr>
 <td>Capture point</td>
-<td>Which of the two moments the reason was given: <strong>decline</strong> (before the CSP accepts the booking) or <strong>install-failure report</strong> (after acceptance, on site). Both use the same set (R4).</td>
+<td>Which of the two moments the reason was given: <strong>decline</strong> (before the CSP accepts the booking) or <strong>install-failure report</strong> (any time after acceptance). Both use the same set (R4).</td>
 <td>—</td>
 </tr>
 <tr>

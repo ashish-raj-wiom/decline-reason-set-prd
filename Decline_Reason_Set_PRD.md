@@ -11,7 +11,7 @@
 
 **Objective.** A CSP who won't install a booking picks the real reason from a list built for his situation — complete enough to fit his case, and unbiased in its order — so he chooses *consciously* instead of guessing, and the reason we capture is the true one.
 
-**Boundary.** This spec governs the **reason picker** — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a **decline** (before he accepts the booking) and an **install-failure report** (after acceptance, on site).
+**Boundary.** This spec governs the **reason picker** — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a **decline** (before he accepts the booking) and an **install-failure report** (any time after acceptance).
 
 **The reason set (V1).** The CSP-facing copy below (English and Hindi), served identically at both capture points (R4). **The copy is part of this spec** — Product owns it, and it is editable via config (C-01). Sheet header: *"Why can't you take this job? — Telling us the right reason helps us send you better work."*
 
@@ -183,7 +183,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-WF-1 | **Given** a CSP declining a booking, with the reason sheet loaded from config C-01, **When** he is shown the per-task randomised list ("Another reason" last), selects "The cable can't reach this place", and submits, **Then** the decline is recorded with that one reason and the exact reasons shown and their order are recorded. | R1a · R1b · R1c · T1 · G1 · G2 · R7 | Settled |
-| AC-WF-2 | **Given** the same reason set (C-01), **When** one CSP **declines a booking before accepting it** and picks "The cable can't reach this place", and another CSP **reports an install-failure on site after accepting** and picks "I don't have a device right now", **Then** both are recorded with exactly one reason from the identical set — each stamped with its capture point (decline vs install-failure report) — and each flows downstream as expected. | R1 · R4 · T1 · G1 · G3 · G5 | Settled |
+| AC-WF-2 | **Given** the same reason set (C-01), **When** one CSP **declines a booking before accepting it** and picks "The cable can't reach this place", and another CSP **reports an install-failure after accepting** and picks "I don't have a device right now", **Then** both are recorded with exactly one reason from the identical set — each stamped with its capture point (decline vs install-failure report) — and each flows downstream as expected. | R1 · R4 · T1 · G1 · G3 · G5 | Settled |
 
 ### GRD — Guardrails
 
@@ -235,7 +235,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | Term | Meaning | Owner (domain) |
 |---|---|---|
 | Reason-capture | **Canonical definition:** the record attaching one stated reason (or "Other" free-text) and the capture point, plus the exact list and order shown, to a decline or install-failure event. All other mentions cite this. | Data |
-| Capture point | Which of the two moments the reason was given: **decline** (before the CSP accepts the booking) or **install-failure report** (after acceptance, on site). Both use the same set (R4). | — |
+| Capture point | Which of the two moments the reason was given: **decline** (before the CSP accepts the booking) or **install-failure report** (any time after acceptance). Both use the same set (R4). | — |
 | Other ("Another reason") | The catch-all reason, always shown last, whose V1 copy is "Another reason" / "कोई और वजह"; selecting it reveals an inline text box and requires non-empty free-text (R3). | — |
 | Reason set | **Canonical definition:** the config-driven set of reasons — which reasons are shown, each reason's display copy, order-eligibility — served to the sheet; changeable without an app release (C-01, R5). The V1 members and copy are listed in §1. | Product |
 | Position bias | The tendency to pick a reason because of where it sits in the list, not because it is true — the effect randomisation (G2) removes. | — |
