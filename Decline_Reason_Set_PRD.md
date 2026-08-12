@@ -98,7 +98,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 **Experience intent:** the CSP tells us why in one honest tap — the list is short, neutral, and never nudges him toward one answer. ⚠️ *AI GENERATED — review*
 
-**Master design file:** reason sheet designed — V1 mockups approved (English + Hindi); Figma link TBD. ⚠️ *AI GENERATED — review*
+**Master design file:** Figma · "PA — Dev → January 2026 Onwards" — [reason sheet frame](https://www.figma.com/design/W2Z3B5xfFO3UibJSzkyHn2/PA---Dev--%3E-January-2026-Onwards?node-id=10827-3318&t=LsaXp8nSAj726SVt-0)
 
 ### Reason sheet (CSP app) — decline & install-failure
 
@@ -260,7 +260,7 @@ What the platform must be able to do for this feature to exist. Whether these ar
 | §2 R6 | "No availability action in V1" | From the brief (handoff out of scope); the explicit V1 "capture only, no action" behaviour is inferred. |
 | §3b T4 + AC-DUP-1 | Duplicate-submit is idempotent (one reason-capture) | Standard safeguard; duplicate-trigger behaviour not specified. |
 | §3a precedence + AC-RACE-1 | Reason validity is fixed at render | A rule was needed for config changing mid-session; the chosen resolution is inferred. |
-| §4 | Figma link = TBD; Reason-config console screen; experience-intent line | Reason-sheet mockups are approved (EN + HI); the Figma link and the internal config console are still to be confirmed. |
+| §4 | Reason-config console screen; experience-intent line | Reason-sheet Figma is linked; the internal config console and the experience-intent wording are still inferred. |
 | §5 C-02 | Range "{per task, off}" | PM chose "per task"; the allowed range is inferred. |
 | §5 C-03 | "Other" minimum = non-empty (≥1 char), Fixed in V1 | Min-length rule not specified; non-empty is the minimal safe default. |
 | §7 AC-REC-5, AC-CFG-2, AC-RACE-1, AC-DUP-1, AC-BV-2 | Marked ACs | Each rests on an inferred rule/behaviour above; they test decisions the PM has not yet confirmed. |
