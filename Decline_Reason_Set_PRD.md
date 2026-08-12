@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — TBD ⚠️ *AI GENERATED — review* | **Status** — Draft | **Sign-off** — Pending |
-| **Version** — v0.2 · 11 Aug 2026 | **Consulted — CSP App** — TBD ⚠️ *AI GENERATED — review* | **Consulted — Data/Analytics** — TBD ⚠️ *AI GENERATED — review* | **Consulted — DAS / Quality** — TBD ⚠️ *AI GENERATED — review* |
+| **Version** — v0.3 · 11 Aug 2026 | **Consulted — CSP App** — TBD ⚠️ *AI GENERATED — review* | **Consulted — Data/Analytics** — TBD ⚠️ *AI GENERATED — review* | **Consulted — DAS / Quality** — TBD ⚠️ *AI GENERATED — review* |
 
 ---
 
@@ -13,19 +13,18 @@
 
 **Boundary.** This spec governs the **reason picker** — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a **decline** (before he accepts the booking) and an **install-failure report** (after acceptance, on site).
 
-**The reason set (V1).** The same list is served at both capture points (R4) and is config-driven (C-01):
+**The reason set (V1).** The CSP-facing copy below (English and Hindi) is the V1 default, served identically at both capture points (R4) and config-driven — copy included (C-01). Sheet header: *"Why can't you take this job? — Telling us the right reason helps us send you better work."*
 
-| Reason | Change |
-|---|---|
-| Service not available at this location | kept |
-| Required device is currently unavailable | kept |
-| Customer is not interested anymore | kept |
-| Installation could not be scheduled | kept |
-| Could not understand the address | **new** |
-| Technician not available (ladka nahi hai) | **new** |
-| Other — free text | **new**, always shown last |
+| Reason (CSP sees) | Hindi | What it means |
+|---|---|---|
+| The cable can't reach this place | इस जगह तार नहीं जा पाता | not serviceable / coverage |
+| I couldn't understand the address | पता समझ नहीं आया | address unclear |
+| The customer said no | कस्टमर ने मना कर दिया | customer declined |
+| I don't have a device right now | नेटबॉक्स अभी उपलब्ध नहीं है | netbox / device unavailable |
+| No one free to install it | लगाने वाला कोई नहीं है | technician / labour unavailable |
+| Another reason *(free text)* | कोई और वजह | anything else — the CSP types it; always shown last |
 
-Removed: **"Network setup is currently not possible"** and **"Customer did not agree with the plan price"** — both simply dropped from the list (no clubbing, no merging into another reason).
+**Changed from today:** removed **"Network setup is currently not possible"**, **"Customer did not agree with the plan price"** and **"Installation could not be scheduled"** — dropped, not merged into any other reason. The remaining reasons were reworded into plain CSP language, and **"I couldn't understand the address"**, **"No one free to install it"** and the free-text **"Another reason"** were added.
 
 ### Guardrails — promises that hold on every path
 
@@ -56,7 +55,7 @@ Removed: **"Network setup is currently not possible"** and **"Customer did not a
 | R3 | As a CSP whose reason isn't in the list, I pick "Other" and type it, so a missing reason still gets captured. | **(a)** Offer "Other", always last. **(b)** Require non-empty free-text (C-03) when "Other" is chosen. **(c)** Store the free-text. | **(a)** Accept "Other" with empty text. **(b)** Show the free-text back to the CSP as anything but his own input. |
 | R4 | As Wiom, I want the decline and install-failure lists to stay identical so the two moments can be read together. | Serve one identical configured reason set (C-01) at both capture points. | Let the two lists diverge. |
 | R5 | As the taxonomy owner, I want to change the reason set — including any reason's copy — without shipping a new app build, so the list can evolve. | **(a)** Keep the reason set — items, each reason's display copy, active/retired, order-eligibility — config-driven (C-01), applied identically at both capture points. **(b)** A reason retired in config stops appearing on new sheets from that change forward. | **(a)** Alter reasons already recorded on past events. **(b)** Show a retired reason on a newly opened sheet. |
-| R6 | As a CSP with no technician available, I can pick "Technician not available (ladka nahi hai)", so that supply gap is captured. | Capture it like any other reason. | Trigger any availability / pause-installs action in V1 — the Availability-service handoff is out of scope here ⚠️ *AI GENERATED — review*. |
+| R6 | As a CSP with no one free to install, I can pick "No one free to install it", so that supply gap is captured. | Capture it like any other reason. | Trigger any availability / pause-installs action in V1 — the Availability-service handoff is out of scope here ⚠️ *AI GENERATED — review*. |
 | R7 | As Wiom, I want to know exactly what the CSP saw when he chose, so his choice is auditable and position effects are measurable. | Record, per event, the **exact set of reasons shown and their order**, retrievable later. | Record only the chosen reason with no trace of what was shown. |
 
 ---
@@ -97,19 +96,21 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 **Experience intent:** the CSP tells us why in one honest tap — the list is short, neutral, and never nudges him toward one answer. ⚠️ *AI GENERATED — review*
 
-**Master design file:** TBD — the exact Step-1 UX is finalised by the Solutions team. ⚠️ *AI GENERATED — review*
+**Master design file:** reason sheet designed — V1 mockups approved (English + Hindi); Figma link TBD. ⚠️ *AI GENERATED — review*
 
-### Reason sheet (CSP app) — decline & install-failure — design TBD
+### Reason sheet (CSP app) — decline & install-failure
 
-**States:** default (list shown, none selected) · reason selected · "Other" selected (free-text field shown) · submit blocked (no reason, or "Other" with empty text)
+**Header (design copy):** title *"Why can't you take this job?"*, subtitle *"Telling us the right reason helps us send you better work."*
+**States:** default (list shown, none selected) · reason selected · "Another reason" selected (inline text box shown) · submit blocked (no reason, or "Another reason" with empty text)
 **Freshness:** the list reflects the current config (C-01) on open.
 
 | Element | Source / Routes to | Logic |
 |---|---|---|
-| Field — reason list | config (C-01); order per C-02 | randomised per task, "Other" always last (R1c, G2) |
+| Field — reason list | config (C-01); order per C-02 | single-select radio list; randomised per task, "Another reason" always last (R1c, G2) |
 | Action — select one reason | — | single-select; max one primary reason (C-04) |
-| Check — "Other" free-text | — | required non-empty (C-03) when "Other" selected; else submit blocked (R3b, T3) |
-| Action — submit | T1 / T2 via §3a | precondition: one primary reason, plus non-empty text if "Other" |
+| Field — "Another reason" text box | — | appears inline directly under "Another reason" when it is selected (R3) |
+| Check — free-text | — | required non-empty (C-03) when "Another reason" selected; else submit blocked (R3b, T3) |
+| Action — submit | T1 / T2 via §3a | precondition: one primary reason, plus non-empty text if "Another reason" |
 
 ### Reason-config console (internal) — design TBD ⚠️ *AI GENERATED — review*
 
@@ -152,11 +153,11 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-REC-1 | **Given** a CSP declining a booking in zone_3289, with the sheet showing 6 reasons + "Other", **When** he selects "Service not available at this location" and submits, **Then** the decline is recorded with that one reason, capture point = decline, and the exact reasons shown and their order are recorded. | R1a · R1b · T1 · G1 · R7 | Settled |
-| AC-REC-2 | **Given** the reason sheet, **When** the CSP selects "Customer is not interested anymore" and submits, **Then** it is recorded as that reason — a first-class list item, not merged into any other. | R1a · T1 | Settled |
-| AC-REC-3 | **Given** the CSP selects "Other", **When** he types "gali me ladai ho rahi thi, ja nahi paya" and submits, **Then** it is recorded with reason "Other" and that free-text stored. | R3a · R3b · R3c · T2 | Settled |
-| AC-REC-4 | **Given** the CSP selects "Technician not available (ladka nahi hai)", **When** he submits, **Then** it is recorded as that reason and **no** availability / pause-installs action fires. | R6 · T1 | Settled ⚠️ *AI GENERATED — review* |
-| AC-REC-5 | **Given** a decline sheet that showed, in order, "Customer is not interested · Service not available · Required device unavailable · Installation could not be scheduled · Could not understand the address · Technician not available · Other", **When** the CSP selects the 2nd item and submits, **Then** the recorded event carries that exact shown list and order alongside the chosen reason, retrievable later. | R7 · T1 · MQ-5 | Settled |
+| AC-REC-1 | **Given** a CSP declining a booking in zone_3289, with the sheet showing 5 reasons + "Another reason", **When** he selects "The cable can't reach this place" and submits, **Then** the decline is recorded with that one reason, capture point = decline, and the exact reasons shown and their order are recorded. | R1a · R1b · T1 · G1 · R7 | Settled |
+| AC-REC-2 | **Given** the reason sheet, **When** the CSP selects "The customer said no" and submits, **Then** it is recorded as that reason — a first-class list item, not merged into any other. | R1a · T1 | Settled |
+| AC-REC-3 | **Given** the CSP selects "Another reason", **When** the inline text box appears and he types "gali me ladai ho rahi thi, ja nahi paya" and submits, **Then** it is recorded as "Another reason" with that free-text stored. | R3a · R3b · R3c · T2 | Settled |
+| AC-REC-4 | **Given** the CSP selects "No one free to install it", **When** he submits, **Then** it is recorded as that reason and **no** availability / pause-installs action fires. | R6 · T1 | Settled ⚠️ *AI GENERATED — review* |
+| AC-REC-5 | **Given** a decline sheet that showed, in order, "The cable can't reach this place · I couldn't understand the address · The customer said no · I don't have a device right now · No one free to install it · Another reason", **When** the CSP selects the 3rd item and submits, **Then** the recorded event carries that exact shown list and order alongside the chosen reason, retrievable later. | R7 · T1 · MQ-5 | Settled |
 
 ### BLK — Submission blocked (T3)
 
@@ -169,7 +170,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-WF-1 | **Given** a CSP declining a booking, with the reason sheet loaded from config C-01, **When** he is shown the per-task randomised list ("Other" last), selects "Service not available at this location", and submits, **Then** the decline is recorded with that one reason and the exact reasons shown and their order are recorded. | R1a · R1b · R1c · T1 · G1 · G2 · R7 | Settled |
+| AC-WF-1 | **Given** a CSP declining a booking, with the reason sheet loaded from config C-01, **When** he is shown the per-task randomised list ("Another reason" last), selects "The cable can't reach this place", and submits, **Then** the decline is recorded with that one reason and the exact reasons shown and their order are recorded. | R1a · R1b · R1c · T1 · G1 · G2 · R7 | Settled |
 
 ### GRD — Guardrails
 
@@ -182,21 +183,21 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-CFG-1 | **Given** Product retires "Could not understand the address" in config, **When** a CSP opens a new reason sheet, **Then** that reason no longer appears — with no app release — and events that already recorded it are unchanged. | R5a · R5b · R5(MUST NOT) | Settled |
-| AC-CFG-2 | **Given** Product adds a new reason in config, **When** the sheet next renders, **Then** the new reason appears in the randomised list (before "Other"). | R5a · C-01 | Settled ⚠️ *AI GENERATED — review* |
-| AC-CFG-3 | **Given** Product changes the copy of "Customer is not interested anymore" to "Grahak abhi nahi chahta" in config, **When** a CSP opens a new reason sheet at either a decline or an install-failure, **Then** the updated copy shows at both — with no app release. | R5a · C-01 | Settled |
+| AC-CFG-1 | **Given** Product retires "I couldn't understand the address" in config, **When** a CSP opens a new reason sheet, **Then** that reason no longer appears — with no app release — and events that already recorded it are unchanged. | R5a · R5b · R5(MUST NOT) | Settled |
+| AC-CFG-2 | **Given** Product adds a new reason in config, **When** the sheet next renders, **Then** the new reason appears in the randomised list (before "Another reason"). | R5a · C-01 | Settled ⚠️ *AI GENERATED — review* |
+| AC-CFG-3 | **Given** Product changes the copy of "The customer said no" to "कस्टमर ने मना कर दिया" in config, **When** a CSP opens a new reason sheet at either a decline or an install-failure, **Then** the updated copy shows at both — with no app release. | R5a · C-01 | Settled |
 
 ### RACE — Races
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-RACE-1 | **Given** a CSP opened the sheet while "Could not understand the address" was active, **When** config retires it before he taps submit and he had selected it, **Then** the submission still records that reason (valid at render), and the next sheet render omits it. | §3a precedence | Settled ⚠️ *AI GENERATED — review* |
+| AC-RACE-1 | **Given** a CSP opened the sheet while "I couldn't understand the address" was active, **When** config retires it before he taps submit and he had selected it, **Then** the submission still records that reason (valid at render), and the next sheet render omits it. | §3a precedence | Settled ⚠️ *AI GENERATED — review* |
 
 ### DUP — Duplicate trigger (T4)
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-DUP-1 | **Given** a decline already recorded with "Service not available", **When** the CSP double-taps submit, **Then** exactly one reason-capture exists for that event. | T4 | Settled ⚠️ *AI GENERATED — review* |
+| AC-DUP-1 | **Given** a decline already recorded with "The cable can't reach this place", **When** the CSP double-taps submit, **Then** exactly one reason-capture exists for that event. | T4 | Settled ⚠️ *AI GENERATED — review* |
 
 ### BV — Boundary values ("Other" text length, C-03)
 
@@ -209,7 +210,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-REG-1 | **Given** DAS and Quality both read decline / install-failure reasons, **When** the reason set changes — "Customer did not agree with the plan price" removed, "Technician not available" added, and one reason's copy edited — **Then** both services keep working exactly as before: no errors, and no change to their behaviour on the reasons they still consume. | R2 · G4 · MQ-3 | Settled |
+| AC-REG-1 | **Given** DAS and Quality both read decline / install-failure reasons, **When** the reason set changes — "Customer did not agree with the plan price" removed, "No one free to install it" added, and one reason's copy edited — **Then** both services keep working exactly as before: no errors, and no change to their behaviour on the reasons they still consume. | R2 · G4 · MQ-3 | Settled |
 
 ---
 
@@ -219,10 +220,10 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 |---|---|---|
 | Reason-capture | **Canonical definition:** the record attaching one stated reason (or "Other" free-text) and the capture point, plus the exact list and order shown, to a decline or install-failure event. All other mentions cite this. | Data |
 | Capture point | Which of the two moments the reason was given: **decline** (before the CSP accepts the booking) or **install-failure report** (after acceptance, on site). Both use the same set (R4). | — |
-| Other | The catch-all reason, always shown last, requiring non-empty free-text (R3). | — |
-| Reason set | **Canonical definition:** the config-driven set of reasons — items, each reason's display copy, active/retired, order-eligibility — served to the sheet; changeable without an app release (C-01, R5). The V1 members are listed in §1. | Product |
+| Other ("Another reason") | The catch-all reason, always shown last, whose V1 copy is "Another reason" / "कोई और वजह"; selecting it reveals an inline text box and requires non-empty free-text (R3). | — |
+| Reason set | **Canonical definition:** the config-driven set of reasons — items, each reason's display copy, active/retired, order-eligibility — served to the sheet; changeable without an app release (C-01, R5). The V1 members and copy are listed in §1. | Product |
 | Position bias | The tendency to pick a reason because of where it sits in the list, not because it is true — the effect randomisation (G2, C-02) removes. | — |
-| Technician not available (ladka nahi hai) | A reason for "no technician / labour to send". Captured only in V1; its Availability-service handoff (pause installs for the day) is out of scope here. | Product |
+| No one free to install it | The reason for "no technician / labour to send" ("लगाने वाला कोई नहीं है"). Captured only in V1; its Availability-service handoff (pause installs for the day) is out of scope here. | Product |
 
 ---
 
