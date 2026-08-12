@@ -193,6 +193,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | AC-CFG-1 | **Given** Product hides "I couldn't understand the address" from the picker in config, **When** a CSP opens a new reason sheet, **Then** that reason no longer appears — with no app release — the reason still exists in the underlying list, and events that already recorded it are unchanged. | R5a · R5b · R5(MUST NOT) | Settled |
 | AC-CFG-2 | **Given** Product adds a new reason in config, **When** the sheet next renders, **Then** the new reason appears in the randomised list (before "Another reason"). | R5a · C-01 | Settled ⚠️ *AI GENERATED — review* |
 | AC-CFG-3 | **Given** Product changes the copy of "The customer said no" to "कस्टमर ने मना कर दिया" in config, **When** a CSP opens a new reason sheet at either a decline or an install-failure, **Then** the updated copy shows at both — with no app release. | R5a · C-01 | Settled |
+| AC-CFG-4 | **Given** the app shows whatever reason copy (English and Hindi) the backend serves at runtime — no reason copy is baked into the app build — **When** any reason's copy is edited in config at any point in future, **Then** every device shows the new copy on the next sheet open, with no app release and no app update required. | R5a · R5c · C-01 | Settled |
 
 ### RACE — Races
 
