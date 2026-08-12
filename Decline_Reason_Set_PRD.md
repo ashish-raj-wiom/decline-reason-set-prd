@@ -41,7 +41,6 @@
 
 | ID | Metric | Baseline | Target | Source |
 |---|---|---|---|---|
-| M1 | Selection share of a reason no longer varies with its display position (position bias removed) | n/a — new capability (order was fixed) | No detectable position effect ⚠️ *AI GENERATED — review* | MQ-1 |
 | M2 | Declines / install-failures recorded with exactly one valid reason | ~100% *(today's list is mandatory single-select)* ⚠️ *AI GENERATED — review* | 100% | MQ-2 |
 
 **Invariant (not a metric):** G1 reason-less decline/failure = 0, zero tolerance. Monitored via MQ-2, not trended.
@@ -142,11 +141,11 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 | ID | The system must be able to answer… | Feeds |
 |---|---|---|
-| MQ-1 | Does the selection share of each reason depend on its display position? | M1 · G2 |
+| MQ-1 | Does the selection share of each reason depend on its display position? | G2 |
 | MQ-2 | What share of declines / install-failures were recorded with exactly one valid reason (and "Other" with non-empty text)? | M2 · G1 invariant |
 | MQ-3 | When the reason set changes (a reason removed, added, or its copy edited), does any downstream consumer — DAS, Quality, any reader — error or change behaviour? | G4 |
 | MQ-4 | Do the decline sheet and the install-failure sheet serve the identical reason set in production? | G3 · R4 |
-| MQ-5 | For any given decline / install-failure, which reasons were shown to the CSP and in what order? | R7 · M1 |
+| MQ-5 | For any given decline / install-failure, which reasons were shown to the CSP and in what order? | R7 |
 | MQ-6 | Are all declines / install-failures — including those with newly-added reasons — accepted and processed downstream by DAS and CL OS as expected? | G5 |
 | MQ-7 | For every logged decline / install-failure, can a downstream team map its reason identifier to a single, unambiguous "why"? | G6 · R8 |
 
@@ -245,7 +244,7 @@ What the platform must be able to do for this feature to exist. Whether these ar
 | Serve a config-driven reason set at both capture points, randomised per task with "Other" last. | R1 · R4 · C-01 · C-02 · G2 · G3 |
 | Require and store exactly one primary reason per event, plus "Other" free-text. | R1b · R3 · C-04 · G1 |
 | Change the reason set — add / remove / reorder-eligibility / edit any reason's copy — without an app release, effective at both capture points on next render, without touching past records. | R5 · C-01 |
-| Record, per event, the exact set of reasons shown and their order — retrievable later. | R7 · M1 · MQ-1 · MQ-5 · G2 |
+| Record, per event, the exact set of reasons shown and their order — retrievable later. | R7 · MQ-1 · MQ-5 · G2 |
 | Keep the reason contract stable and backward-compatible, so downstream consumers (DAS, Quality, any reader) are unaffected when the set changes. | R2 · G4 · MQ-3 |
 | Attach a stable reason identifier (its values tech-defined) to every logged decline / failure, so downstream teams map it to the "why". | R8 · G6 · MQ-7 |
 | Carry every completed decline / install-failure downstream so DAS and CL OS act on it as expected. | R1 · R2 · G5 · MQ-6 |
@@ -257,7 +256,6 @@ What the platform must be able to do for this feature to exist. Whether these ar
 | Location | What was generated | Basis |
 |---|---|---|
 | Header | Reviewer + all three Consulted names = TBD | No names supplied; PRD needs an Eng reviewer and consulted domains named before sign-off. |
-| §1 M1 target | "No detectable position effect" | PM asked to remove position bias; the pass/fail bar for M1 is inferred, not stated. |
 | §1 M2 baseline | "~100% today" | Inferred: today's list is mandatory single-select. Confirm the current capture is truly reason-mandatory. |
 | §2 R6 | "No availability action in V1" | From the brief (handoff out of scope); the explicit V1 "capture only, no action" behaviour is inferred. |
 | §3b T4 + AC-DUP-1 | Duplicate-submit is idempotent (one reason-capture) | Standard safeguard; duplicate-trigger behaviour not specified. |
