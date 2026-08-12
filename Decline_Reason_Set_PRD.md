@@ -183,6 +183,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-WF-1 | **Given** a CSP declining a booking, with the reason sheet loaded from config C-01, **When** he is shown the per-task randomised list ("Another reason" last), selects "The cable can't reach this place", and submits, **Then** the decline is recorded with that one reason and the exact reasons shown and their order are recorded. | R1a · R1b · R1c · T1 · G1 · G2 · R7 | Settled |
+| AC-WF-2 | **Given** the same reason set (C-01), **When** one CSP **declines a booking before accepting it** and picks "The cable can't reach this place", and another CSP **reports an install-failure on site after accepting** and picks "I don't have a device right now", **Then** both are recorded with exactly one reason from the identical set — each stamped with its capture point (decline vs install-failure report) — and each flows downstream as expected. | R1 · R4 · T1 · G1 · G3 · G5 | Settled |
 
 ### GRD — Guardrails
 
@@ -212,12 +213,13 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 |---|---|---|---|
 | AC-DUP-1 | **Given** a decline already recorded with "The cable can't reach this place", **When** the CSP double-taps submit, **Then** exactly one reason-capture exists for that event. | T4 | Settled ⚠️ *AI GENERATED — review* |
 
-### BV — Boundary values ("Other" text length, C-03)
+### BV — Boundary values (C-03 text length, C-04 single reason)
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-BV-1 | **Given** "Other" selected, **When** the text field has 0 characters, **Then** submit is blocked (C-03 floor). | C-03 · R3b | Settled |
 | AC-BV-2 | **Given** "Other" selected, **When** the text field has 1 character, **Then** submit is allowed and the reason-capture stores that text. | C-03 · R3b | Settled ⚠️ *AI GENERATED — review* |
+| AC-BV-3 | **Given** one reason is already selected (single-select radio list), **When** the CSP taps a second reason, **Then** the first deselects and only the second stays selected — the event can never carry more than one primary reason (C-04). | R1(MUST NOT) · C-04 | Settled |
 
 ### REG — Regression (no downstream impact)
 

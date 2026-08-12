@@ -554,6 +554,12 @@
 <td>R1a · R1b · R1c · T1 · G1 · G2 · R7</td>
 <td>Settled</td>
 </tr>
+<tr>
+<td>AC-WF-2</td>
+<td><strong>Given</strong> the same reason set (C-01), <strong>When</strong> one CSP <strong>declines a booking before accepting it</strong> and picks &quot;The cable can&#39;t reach this place&quot;, and another CSP <strong>reports an install-failure on site after accepting</strong> and picks &quot;I don&#39;t have a device right now&quot;, <strong>Then</strong> both are recorded with exactly one reason from the identical set — each stamped with its capture point (decline vs install-failure report) — and each flows downstream as expected.</td>
+<td>R1 · R4 · T1 · G1 · G3 · G5</td>
+<td>Settled</td>
+</tr>
 </tbody></table>
 <h3>GRD — Guardrails</h3>
 <table>
@@ -647,7 +653,7 @@
 <td>Settled ⚠️ <em>AI GENERATED — review</em></td>
 </tr>
 </tbody></table>
-<h3>BV — Boundary values (&quot;Other&quot; text length, C-03)</h3>
+<h3>BV — Boundary values (C-03 text length, C-04 single reason)</h3>
 <table>
 <thead>
 <tr>
@@ -668,6 +674,12 @@
 <td><strong>Given</strong> &quot;Other&quot; selected, <strong>When</strong> the text field has 1 character, <strong>Then</strong> submit is allowed and the reason-capture stores that text.</td>
 <td>C-03 · R3b</td>
 <td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+</tr>
+<tr>
+<td>AC-BV-3</td>
+<td><strong>Given</strong> one reason is already selected (single-select radio list), <strong>When</strong> the CSP taps a second reason, <strong>Then</strong> the first deselects and only the second stays selected — the event can never carry more than one primary reason (C-04).</td>
+<td>R1(MUST NOT) · C-04</td>
+<td>Settled</td>
 </tr>
 </tbody></table>
 <h3>REG — Regression (no downstream impact)</h3>
