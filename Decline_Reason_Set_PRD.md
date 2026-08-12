@@ -3,7 +3,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj (PM) | **Reviewer** — Saurabh Goyal (EM) | **Status** — Signed off | **Sign-off** — Signed off · 11 Aug 2026 |
-| **Version** — v1.0 · 11 Aug 2026 | | | |
+| **Version** — v1.1 · 11 Aug 2026 | | | |
 
 ---
 
@@ -28,7 +28,7 @@
 
 *Indicative copy only — take the exact English/Hindi wording directly from the Figma file (§4).*
 
-**How the set changes (add-only).** The underlying reason list only **grows** — no reason is ever removed from the system. We **add** three reasons — *"I couldn't understand the address"*, *"No one free to install it"*, and the free-text *"Another reason"* — and **reword** the copy of the kept ones. The picker then **shows only the six above** (C-01); any previously-shown reason not in this list stays in the system, just no longer shown to the CSP. Any new reason must also be recognised by the downstream services that read reasons, so they consume it as expected (G5).
+**How the set changes (add-only).** The underlying reason list only **grows** — no reason is ever removed from the system. We **add** three reasons — *"I couldn't understand the address"*, *"No one free to install it"*, and the free-text *"Another reason"* — and **reword** the copy of the kept ones. The picker then **shows only the six above** (managed via config, R5); any previously-shown reason not in this list stays in the system, just no longer shown to the CSP. Any new reason must also be recognised by the downstream services that read reasons, so they consume it as expected (G5).
 
 ### Guardrails — promises that hold on every path
 
@@ -55,11 +55,11 @@
 
 | ID | Story | MUST | MUST NOT |
 |---|---|---|---|
-| R1 | As a CSP who won't install a booking, I see a clear list of reasons and pick the one that fits, so I can tell Wiom why in one tap. | **(a)** Show the current configured reason set (C-01) at both capture points. **(b)** Require exactly one primary reason (C-04) before the decline / install-failure is accepted. **(c)** Randomise the order per task (C-02) with "Other" pinned last. | Record a decline / install-failure with no reason, or with more than one primary reason. |
+| R1 | As a CSP who won't install a booking, I see a clear list of reasons and pick the one that fits, so I can tell Wiom why in one tap. | **(a)** Show the current reason set (copy per C-01) at both capture points. **(b)** Require exactly one primary reason — single-select, fixed in V1 — before the decline / install-failure is accepted. **(c)** Randomise the order per task (fixed in V1) with "Other" pinned last. | Record a decline / install-failure with no reason, or with more than one primary reason. |
 | R2 | As Wiom, I want changing the reason set to be safe for every consumer, so DAS, Quality and any service reading these reasons keep working. | Keep the reason contract stable and backward-compatible for consumers — a removed reason simply stops being produced; an added reason is a new value a consumer may ignore. | Break or change the behaviour of any downstream service (DAS, Quality, any reader) by editing the reason set. |
-| R3 | As a CSP whose reason isn't in the list, I pick "Other" and type it, so a missing reason still gets captured. | **(a)** Offer "Other", always last. **(b)** Require non-empty free-text (C-03) when "Other" is chosen. **(c)** Store the free-text. | **(a)** Accept "Other" with empty text. **(b)** Show the free-text back to the CSP as anything but his own input. |
-| R4 | As Wiom, I want the decline and install-failure lists to stay identical so the two moments can be read together. | Serve one identical configured reason set (C-01) at both capture points. | Let the two lists diverge. |
-| R5 | As the taxonomy owner, I want to change which reasons are shown — and any reason's copy — without shipping a new app build, so the list can evolve. | **(a)** Keep the shown-reason set — which reasons appear, each reason's display copy, order-eligibility — config-driven (C-01), applied identically at both capture points. **(b)** A reason hidden in config stops appearing on new sheets from that change forward. **(c)** The reason list is add-only — reasons may be added; none is ever removed. | **(a)** Remove an existing reason from the underlying list. **(b)** Alter reasons already recorded on past events. **(c)** Show a hidden reason on a newly opened sheet. |
+| R3 | As a CSP whose reason isn't in the list, I pick "Other" and type it, so a missing reason still gets captured. | **(a)** Offer "Other", always last. **(b)** Require free-text of at least the minimum length (C-02) when "Other" is chosen. **(c)** Store the free-text. | **(a)** Accept "Other" with text shorter than the C-02 minimum. **(b)** Show the free-text back to the CSP as anything but his own input. |
+| R4 | As Wiom, I want the decline and install-failure lists to stay identical so the two moments can be read together. | Serve one identical reason set — same reasons and same copy (C-01) — at both capture points. | Let the two lists diverge. |
+| R5 | As the taxonomy owner, I want to change which reasons are shown — and any reason's copy (C-01) — without shipping a new app build, so the list can evolve. | **(a)** Manage the shown-reason set — which reasons appear, their order — and each reason's display copy (C-01) with no app release, applied identically at both capture points. **(b)** A reason hidden stops appearing on new sheets from that change forward. **(c)** The reason list is add-only — reasons may be added; none is ever removed. | **(a)** Remove an existing reason from the underlying list. **(b)** Alter reasons already recorded on past events. **(c)** Show a hidden reason on a newly opened sheet. |
 | R6 | As a CSP with no one free to install, I can pick "No one free to install it", so that supply gap is captured. | Capture it like any other reason. | Trigger any availability / pause-installs action in V1 — the Availability-service handoff is out of scope here. |
 | R7 | As Wiom, I want to know exactly what the CSP saw when he chose, so his choice is auditable and position effects are measurable. | Record, per event, the **exact set of reasons shown and their order**, retrievable later. | Record only the chosen reason with no trace of what was shown. |
 | R8 | As analytics / product / Genie / DAS / CL and any downstream team, I want every logged decline / install-failure to carry a stable reason identifier, so I can tell exactly *why* the CSP declined. | **(a)** Record each reason as a **stable identifier** (its values defined by tech) that stays the same even when the display copy changes. **(b)** Map each identifier one-to-one to a single, well-defined "why". | **(a)** Use the (changeable) display copy as the downstream signal. **(b)** Log a reason no downstream team can interpret. |
@@ -77,7 +77,7 @@ flowchart TD
     Z -- "No" --> B{"One primary reason selected?"}
     B -- "No" --> T3["T3 — submission blocked, prompt to pick a reason"]
     B -- "Yes" --> C{"Reason = Other?"}
-    C -- "Yes" --> D{"Free-text non-empty? (C-03)"}
+    C -- "Yes" --> D{"Free-text ≥ C-02 minimum?"}
     D -- "No" --> T3b["T3 — submission blocked, prompt to add text"]
     D -- "Yes" --> T2["T2 — record with Other + free-text"]
     C -- "No" --> T1["T1 — record with the selected reason"]
@@ -92,8 +92,8 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | ID | From | Action / Trigger | Rule / Check | To | Side-effects |
 |---|---|---|---|---|---|
 | T1 | — | Submit with a listed reason (not "Other") | Exactly one primary reason selected (R1b) | Recorded | Reason-capture stored: reason + capture point (decline / install-failure); the exact set of reasons shown and their order is recorded (R7, MQ-1, MQ-5). |
-| T2 | — | Submit with "Other" | Free-text non-empty (R3b, C-03) | Recorded | Stored as "Other" + the free-text (R3c); reasons shown + order recorded (R7). |
-| T3 | Sheet shown | Submit | No primary reason selected, **or** "Other" with empty text | Sheet shown | Submission blocked; CSP prompted to pick a reason / add text (R1b, R3b). Nothing is recorded. |
+| T2 | — | Submit with "Other" | Free-text ≥ minimum (R3b, C-02) | Recorded | Stored as "Other" + the free-text (R3c); reasons shown + order recorded (R7). |
+| T3 | Sheet shown | Submit | No primary reason selected, **or** "Other" below the C-02 minimum | Sheet shown | Submission blocked; CSP prompted to pick a reason / add more text (R1b, R3b). Nothing is recorded. |
 | T4 | Recorded | Duplicate submit for the same event (double-tap) | Event already recorded | Recorded | No second reason-capture is created — the first stands (idempotent). |
 
 ---
@@ -114,11 +114,11 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 | Element | Source / Routes to | Logic |
 |---|---|---|
-| Field — reason list | config (C-01); order per C-02 | single-select radio list; randomised per task, "Another reason" always last (R1c, G2) |
-| Action — select one reason | — | single-select; max one primary reason (C-04) |
+| Field — reason list | config (copy per C-01) | single-select radio list; randomised per task (fixed), "Another reason" always last (R1c, G2) |
+| Action — select one reason | — | single-select; exactly one primary reason (R1b) |
 | Field — "Another reason" text box | — | appears inline directly under "Another reason" when it is selected (R3) |
-| Check — free-text | — | required non-empty (C-03) when "Another reason" selected; else submit blocked (R3b, T3) |
-| Action — submit | T1 / T2 via §3a | precondition: one primary reason, plus non-empty text if "Another reason" |
+| Check — free-text | — | required, at least the C-02 minimum, when "Another reason" selected; else submit blocked (R3b, T3) |
+| Action — submit | T1 / T2 via §3a | precondition: one primary reason, plus text ≥ C-02 minimum if "Another reason" |
 
 ### Reason-config console (internal)
 
@@ -136,10 +136,10 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 | ID | Parameter | Default | Range | Who changes it |
 |---|---|---|---|---|
-| C-01 | Shown-reason set — which reasons appear, **each reason's display copy**, order-eligibility; applied identically to decline and install-failure (governs the sheet, R1a/R4/R5) | The V1 six in §1 — **exact copy from the Figma file (§4)** | Editable via config — show / hide a reason, reorder-eligibility, **change any reason's copy** — with no app release, effective at both capture points; the underlying list is add-only (reasons added, never removed) | Product |
-| C-02 | Reason-order randomisation scope (R1c) | Per task; "Other" pinned last | {per task, off} | Product |
-| C-03 | "Other" free-text minimum (R3b) | Non-empty (≥ 1 character) | Fixed in V1 | Product |
-| C-04 | Max primary reasons per event (R1b) | 1 | Fixed in V1 | Product |
+| C-01 | Each reason's **display copy** (English + Hindi); served at runtime, applied identically to decline and install-failure (R3/R5) | The V1 copy in §1 — **exact copy from the Figma file (§4)** | Editable via config — **change any reason's copy** — with no app release, effective at both capture points | Product |
+| C-02 | "Other" free-text **minimum length** (R3b) | **10 characters** | Fixed in V1 | Product |
+
+*Fixed V1 behaviours (not configurable): the picker is single-select — exactly one primary reason (R1b); order is randomised per task with "Other" last (R1c). See the Override at the foot of this document.*
 
 ---
 
@@ -176,7 +176,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-BLK-1 | **Given** the reason sheet with no reason selected, **When** the CSP taps submit, **Then** submission is blocked, he is prompted to pick a reason, and no reason-capture is recorded. | R1b · T3 · G1 | Settled |
-| AC-BLK-2 | **Given** "Other" is selected with an empty text field, **When** he taps submit, **Then** submission is blocked, he is prompted to add text, and nothing is recorded. | R3b · T3 · C-03 | Settled |
+| AC-BLK-2 | **Given** "Other" is selected with text below the minimum length, **When** he taps submit, **Then** submission is blocked, he is prompted to add more text, and nothing is recorded. | R3b · T3 · C-02 | Settled |
 
 ### WF — Workflows (open → select → record)
 
@@ -189,7 +189,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-GRD-1 | **Given** task A's reason sheet, **When** the CSP opens it twice within task A, **Then** the order is identical both times (per-task stable, C-02); across a different task B the order may differ; and "Other" is last in every render. | R1c · G2 · C-02 | Settled |
+| AC-GRD-1 | **Given** task A's reason sheet, **When** the CSP opens it twice within task A, **Then** the order is identical both times (per-task stable); across a different task B the order may differ; and "Other" is last in every render. | R1c · G2 | Settled |
 | AC-GRD-2 | **Given** one config (C-01), **When** the sheet renders at a decline and at an install-failure, **Then** both show the identical set of reasons in the same membership. | R4 · G3 | Settled |
 
 ### CFG — Configurability (C-01)
@@ -213,13 +213,13 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 |---|---|---|---|
 | AC-DUP-1 | **Given** a decline already recorded with "The cable can't reach this place", **When** the CSP double-taps submit, **Then** exactly one reason-capture exists for that event. | T4 | Settled |
 
-### BV — Boundary values (C-03 text length, C-04 single reason)
+### BV — Boundary values (C-02 text length, single reason)
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-BV-1 | **Given** "Other" selected, **When** the text field has 0 characters, **Then** submit is blocked (C-03 floor). | C-03 · R3b | Settled |
-| AC-BV-2 | **Given** "Other" selected, **When** the text field has 1 character, **Then** submit is allowed and the reason-capture stores that text. | C-03 · R3b | Settled |
-| AC-BV-3 | **Given** one reason is already selected (single-select radio list), **When** the CSP taps a second reason, **Then** the first deselects and only the second stays selected — the event can never carry more than one primary reason (C-04). | R1(MUST NOT) · C-04 | Settled |
+| AC-BV-1 | **Given** "Other" selected, **When** the text field has 9 characters, **Then** submit is blocked (below the C-02 minimum of 10). | C-02 · R3b | Settled |
+| AC-BV-2 | **Given** "Other" selected, **When** the text field has 10 characters, **Then** submit is allowed and the reason-capture stores that text. | C-02 · R3b | Settled |
+| AC-BV-3 | **Given** one reason is already selected (single-select radio list), **When** the CSP taps a second reason, **Then** the first deselects and only the second stays selected — the event can never carry more than one primary reason. | R1(MUST NOT) | Settled |
 
 ### REG — Regression (no downstream impact)
 
@@ -238,7 +238,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | Capture point | Which of the two moments the reason was given: **decline** (before the CSP accepts the booking) or **install-failure report** (after acceptance, on site). Both use the same set (R4). | — |
 | Other ("Another reason") | The catch-all reason, always shown last, whose V1 copy is "Another reason" / "कोई और वजह"; selecting it reveals an inline text box and requires non-empty free-text (R3). | — |
 | Reason set | **Canonical definition:** the config-driven set of reasons — which reasons are shown, each reason's display copy, order-eligibility — served to the sheet; changeable without an app release (C-01, R5). The V1 members and copy are listed in §1. | Product |
-| Position bias | The tendency to pick a reason because of where it sits in the list, not because it is true — the effect randomisation (G2, C-02) removes. | — |
+| Position bias | The tendency to pick a reason because of where it sits in the list, not because it is true — the effect randomisation (G2) removes. | — |
 | No one free to install it | The reason for "no technician / labour to send" ("लगाने वाला कोई नहीं है"). Captured only in V1; its Availability-service handoff (pause installs for the day) is out of scope here. | Product |
 
 ---
@@ -249,8 +249,8 @@ What the platform must be able to do for this feature to exist. Whether these ar
 
 | Capability | Needed by |
 |---|---|
-| Serve a config-driven reason set at both capture points, randomised per task with "Other" last. | R1 · R4 · C-01 · C-02 · G2 · G3 |
-| Require and store exactly one primary reason per event, plus "Other" free-text. | R1b · R3 · C-04 · G1 |
+| Serve the reason set (copy per C-01) at both capture points, randomised per task with "Other" last. | R1 · R4 · C-01 · G2 · G3 |
+| Require and store exactly one primary reason per event, plus "Other" free-text of at least the C-02 minimum. | R1b · R3 · C-02 · G1 |
 | Change the reason set — add / remove / reorder-eligibility / edit any reason's copy — without an app release, effective at both capture points on next render, without touching past records. | R5 · C-01 |
 | Record, per event, the exact set of reasons shown and their order — retrievable later. | R7 · MQ-1 · MQ-5 · G2 |
 | Keep the reason contract stable and backward-compatible, so downstream consumers (DAS, Quality, any reader) are unaffected when the set changes. | R2 · G4 · MQ-3 |
@@ -264,3 +264,4 @@ What the platform must be able to do for this feature to exist. Whether these ar
 | Rule overridden | What was done instead | Rationale | Approved by |
 |---|---|---|---|
 | §7 requires a Failure-window (FAIL) AC type | No FAIL AC | Reason capture is **synchronous** — a submission either records or is blocked inline (T3); there is no asynchronous, money, or service window that can fail after the CSP taps submit. The only "unchanged-on-change" promise (past records untouched when config changes) is covered by AC-CFG-1. | Ashish Raj (PM) |
+| L8 — every product number is a C-id | Two fixed V1 behaviours — single-select (exactly one reason) and per-task randomisation — are stated inline, not as C-id parameters | Configurability is deliberately scoped to two tunable parameters only (reason copy C-01, "Other" minimum C-02); these two behaviours are fixed in V1 and not meant to be changed. | Ashish Raj (PM) |

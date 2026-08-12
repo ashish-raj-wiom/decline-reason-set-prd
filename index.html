@@ -65,7 +65,7 @@
 <td><strong>Sign-off</strong> — Signed off · 11 Aug 2026</td>
 </tr>
 <tr>
-<td><strong>Version</strong> — v1.0 · 11 Aug 2026</td>
+<td><strong>Version</strong> — v1.1 · 11 Aug 2026</td>
 <td></td>
 <td></td>
 <td></td>
@@ -119,7 +119,7 @@
 </tr>
 </tbody></table>
 <p><em>Indicative copy only — take the exact English/Hindi wording directly from the Figma file (§4).</em></p>
-<p><strong>How the set changes (add-only).</strong> The underlying reason list only <strong>grows</strong> — no reason is ever removed from the system. We <strong>add</strong> three reasons — <em>&quot;I couldn&#39;t understand the address&quot;</em>, <em>&quot;No one free to install it&quot;</em>, and the free-text <em>&quot;Another reason&quot;</em> — and <strong>reword</strong> the copy of the kept ones. The picker then <strong>shows only the six above</strong> (C-01); any previously-shown reason not in this list stays in the system, just no longer shown to the CSP. Any new reason must also be recognised by the downstream services that read reasons, so they consume it as expected (G5).</p>
+<p><strong>How the set changes (add-only).</strong> The underlying reason list only <strong>grows</strong> — no reason is ever removed from the system. We <strong>add</strong> three reasons — <em>&quot;I couldn&#39;t understand the address&quot;</em>, <em>&quot;No one free to install it&quot;</em>, and the free-text <em>&quot;Another reason&quot;</em> — and <strong>reword</strong> the copy of the kept ones. The picker then <strong>shows only the six above</strong> (managed via config, R5); any previously-shown reason not in this list stays in the system, just no longer shown to the CSP. Any new reason must also be recognised by the downstream services that read reasons, so they consume it as expected (G5).</p>
 <h3>Guardrails — promises that hold on every path</h3>
 <table>
 <thead>
@@ -201,7 +201,7 @@
 <tbody><tr>
 <td>R1</td>
 <td>As a CSP who won&#39;t install a booking, I see a clear list of reasons and pick the one that fits, so I can tell Wiom why in one tap.</td>
-<td><strong>(a)</strong> Show the current configured reason set (C-01) at both capture points. <strong>(b)</strong> Require exactly one primary reason (C-04) before the decline / install-failure is accepted. <strong>(c)</strong> Randomise the order per task (C-02) with &quot;Other&quot; pinned last.</td>
+<td><strong>(a)</strong> Show the current reason set (copy per C-01) at both capture points. <strong>(b)</strong> Require exactly one primary reason — single-select, fixed in V1 — before the decline / install-failure is accepted. <strong>(c)</strong> Randomise the order per task (fixed in V1) with &quot;Other&quot; pinned last.</td>
 <td>Record a decline / install-failure with no reason, or with more than one primary reason.</td>
 </tr>
 <tr>
@@ -213,19 +213,19 @@
 <tr>
 <td>R3</td>
 <td>As a CSP whose reason isn&#39;t in the list, I pick &quot;Other&quot; and type it, so a missing reason still gets captured.</td>
-<td><strong>(a)</strong> Offer &quot;Other&quot;, always last. <strong>(b)</strong> Require non-empty free-text (C-03) when &quot;Other&quot; is chosen. <strong>(c)</strong> Store the free-text.</td>
-<td><strong>(a)</strong> Accept &quot;Other&quot; with empty text. <strong>(b)</strong> Show the free-text back to the CSP as anything but his own input.</td>
+<td><strong>(a)</strong> Offer &quot;Other&quot;, always last. <strong>(b)</strong> Require free-text of at least the minimum length (C-02) when &quot;Other&quot; is chosen. <strong>(c)</strong> Store the free-text.</td>
+<td><strong>(a)</strong> Accept &quot;Other&quot; with text shorter than the C-02 minimum. <strong>(b)</strong> Show the free-text back to the CSP as anything but his own input.</td>
 </tr>
 <tr>
 <td>R4</td>
 <td>As Wiom, I want the decline and install-failure lists to stay identical so the two moments can be read together.</td>
-<td>Serve one identical configured reason set (C-01) at both capture points.</td>
+<td>Serve one identical reason set — same reasons and same copy (C-01) — at both capture points.</td>
 <td>Let the two lists diverge.</td>
 </tr>
 <tr>
 <td>R5</td>
-<td>As the taxonomy owner, I want to change which reasons are shown — and any reason&#39;s copy — without shipping a new app build, so the list can evolve.</td>
-<td><strong>(a)</strong> Keep the shown-reason set — which reasons appear, each reason&#39;s display copy, order-eligibility — config-driven (C-01), applied identically at both capture points. <strong>(b)</strong> A reason hidden in config stops appearing on new sheets from that change forward. <strong>(c)</strong> The reason list is add-only — reasons may be added; none is ever removed.</td>
+<td>As the taxonomy owner, I want to change which reasons are shown — and any reason&#39;s copy (C-01) — without shipping a new app build, so the list can evolve.</td>
+<td><strong>(a)</strong> Manage the shown-reason set — which reasons appear, their order — and each reason&#39;s display copy (C-01) with no app release, applied identically at both capture points. <strong>(b)</strong> A reason hidden stops appearing on new sheets from that change forward. <strong>(c)</strong> The reason list is add-only — reasons may be added; none is ever removed.</td>
 <td><strong>(a)</strong> Remove an existing reason from the underlying list. <strong>(b)</strong> Alter reasons already recorded on past events. <strong>(c)</strong> Show a hidden reason on a newly opened sheet.</td>
 </tr>
 <tr>
@@ -256,7 +256,7 @@
     Z -- "No" --> B{"One primary reason selected?"}
     B -- "No" --> T3["T3 — submission blocked, prompt to pick a reason"]
     B -- "Yes" --> C{"Reason = Other?"}
-    C -- "Yes" --> D{"Free-text non-empty? (C-03)"}
+    C -- "Yes" --> D{"Free-text ≥ C-02 minimum?"}
     D -- "No" --> T3b["T3 — submission blocked, prompt to add text"]
     D -- "Yes" --> T2["T2 — record with Other + free-text"]
     C -- "No" --> T1["T1 — record with the selected reason"]
@@ -287,7 +287,7 @@
 <td>T2</td>
 <td>—</td>
 <td>Submit with &quot;Other&quot;</td>
-<td>Free-text non-empty (R3b, C-03)</td>
+<td>Free-text ≥ minimum (R3b, C-02)</td>
 <td>Recorded</td>
 <td>Stored as &quot;Other&quot; + the free-text (R3c); reasons shown + order recorded (R7).</td>
 </tr>
@@ -295,9 +295,9 @@
 <td>T3</td>
 <td>Sheet shown</td>
 <td>Submit</td>
-<td>No primary reason selected, <strong>or</strong> &quot;Other&quot; with empty text</td>
+<td>No primary reason selected, <strong>or</strong> &quot;Other&quot; below the C-02 minimum</td>
 <td>Sheet shown</td>
-<td>Submission blocked; CSP prompted to pick a reason / add text (R1b, R3b). Nothing is recorded.</td>
+<td>Submission blocked; CSP prompted to pick a reason / add more text (R1b, R3b). Nothing is recorded.</td>
 </tr>
 <tr>
 <td>T4</td>
@@ -327,13 +327,13 @@
 </thead>
 <tbody><tr>
 <td>Field — reason list</td>
-<td>config (C-01); order per C-02</td>
-<td>single-select radio list; randomised per task, &quot;Another reason&quot; always last (R1c, G2)</td>
+<td>config (copy per C-01)</td>
+<td>single-select radio list; randomised per task (fixed), &quot;Another reason&quot; always last (R1c, G2)</td>
 </tr>
 <tr>
 <td>Action — select one reason</td>
 <td>—</td>
-<td>single-select; max one primary reason (C-04)</td>
+<td>single-select; exactly one primary reason (R1b)</td>
 </tr>
 <tr>
 <td>Field — &quot;Another reason&quot; text box</td>
@@ -343,12 +343,12 @@
 <tr>
 <td>Check — free-text</td>
 <td>—</td>
-<td>required non-empty (C-03) when &quot;Another reason&quot; selected; else submit blocked (R3b, T3)</td>
+<td>required, at least the C-02 minimum, when &quot;Another reason&quot; selected; else submit blocked (R3b, T3)</td>
 </tr>
 <tr>
 <td>Action — submit</td>
 <td>T1 / T2 via §3a</td>
-<td>precondition: one primary reason, plus non-empty text if &quot;Another reason&quot;</td>
+<td>precondition: one primary reason, plus text ≥ C-02 minimum if &quot;Another reason&quot;</td>
 </tr>
 </tbody></table>
 <h3>Reason-config console (internal)</h3>
@@ -387,33 +387,20 @@
 </thead>
 <tbody><tr>
 <td>C-01</td>
-<td>Shown-reason set — which reasons appear, <strong>each reason&#39;s display copy</strong>, order-eligibility; applied identically to decline and install-failure (governs the sheet, R1a/R4/R5)</td>
-<td>The V1 six in §1 — <strong>exact copy from the Figma file (§4)</strong></td>
-<td>Editable via config — show / hide a reason, reorder-eligibility, <strong>change any reason&#39;s copy</strong> — with no app release, effective at both capture points; the underlying list is add-only (reasons added, never removed)</td>
+<td>Each reason&#39;s <strong>display copy</strong> (English + Hindi); served at runtime, applied identically to decline and install-failure (R3/R5)</td>
+<td>The V1 copy in §1 — <strong>exact copy from the Figma file (§4)</strong></td>
+<td>Editable via config — <strong>change any reason&#39;s copy</strong> — with no app release, effective at both capture points</td>
 <td>Product</td>
 </tr>
 <tr>
 <td>C-02</td>
-<td>Reason-order randomisation scope (R1c)</td>
-<td>Per task; &quot;Other&quot; pinned last</td>
-<td>{per task, off}</td>
-<td>Product</td>
-</tr>
-<tr>
-<td>C-03</td>
-<td>&quot;Other&quot; free-text minimum (R3b)</td>
-<td>Non-empty (≥ 1 character)</td>
-<td>Fixed in V1</td>
-<td>Product</td>
-</tr>
-<tr>
-<td>C-04</td>
-<td>Max primary reasons per event (R1b)</td>
-<td>1</td>
+<td>&quot;Other&quot; free-text <strong>minimum length</strong> (R3b)</td>
+<td><strong>10 characters</strong></td>
 <td>Fixed in V1</td>
 <td>Product</td>
 </tr>
 </tbody></table>
+<p><em>Fixed V1 behaviours (not configurable): the picker is single-select — exactly one primary reason (R1b); order is randomised per task with &quot;Other&quot; last (R1c). See the Override at the foot of this document.</em></p>
 <hr>
 <h2>6. Measurement</h2>
 <table>
@@ -533,8 +520,8 @@
 </tr>
 <tr>
 <td>AC-BLK-2</td>
-<td><strong>Given</strong> &quot;Other&quot; is selected with an empty text field, <strong>When</strong> he taps submit, <strong>Then</strong> submission is blocked, he is prompted to add text, and nothing is recorded.</td>
-<td>R3b · T3 · C-03</td>
+<td><strong>Given</strong> &quot;Other&quot; is selected with text below the minimum length, <strong>When</strong> he taps submit, <strong>Then</strong> submission is blocked, he is prompted to add more text, and nothing is recorded.</td>
+<td>R3b · T3 · C-02</td>
 <td>Settled</td>
 </tr>
 </tbody></table>
@@ -573,8 +560,8 @@
 </thead>
 <tbody><tr>
 <td>AC-GRD-1</td>
-<td><strong>Given</strong> task A&#39;s reason sheet, <strong>When</strong> the CSP opens it twice within task A, <strong>Then</strong> the order is identical both times (per-task stable, C-02); across a different task B the order may differ; and &quot;Other&quot; is last in every render.</td>
-<td>R1c · G2 · C-02</td>
+<td><strong>Given</strong> task A&#39;s reason sheet, <strong>When</strong> the CSP opens it twice within task A, <strong>Then</strong> the order is identical both times (per-task stable); across a different task B the order may differ; and &quot;Other&quot; is last in every render.</td>
+<td>R1c · G2</td>
 <td>Settled</td>
 </tr>
 <tr>
@@ -653,7 +640,7 @@
 <td>Settled</td>
 </tr>
 </tbody></table>
-<h3>BV — Boundary values (C-03 text length, C-04 single reason)</h3>
+<h3>BV — Boundary values (C-02 text length, single reason)</h3>
 <table>
 <thead>
 <tr>
@@ -665,20 +652,20 @@
 </thead>
 <tbody><tr>
 <td>AC-BV-1</td>
-<td><strong>Given</strong> &quot;Other&quot; selected, <strong>When</strong> the text field has 0 characters, <strong>Then</strong> submit is blocked (C-03 floor).</td>
-<td>C-03 · R3b</td>
+<td><strong>Given</strong> &quot;Other&quot; selected, <strong>When</strong> the text field has 9 characters, <strong>Then</strong> submit is blocked (below the C-02 minimum of 10).</td>
+<td>C-02 · R3b</td>
 <td>Settled</td>
 </tr>
 <tr>
 <td>AC-BV-2</td>
-<td><strong>Given</strong> &quot;Other&quot; selected, <strong>When</strong> the text field has 1 character, <strong>Then</strong> submit is allowed and the reason-capture stores that text.</td>
-<td>C-03 · R3b</td>
+<td><strong>Given</strong> &quot;Other&quot; selected, <strong>When</strong> the text field has 10 characters, <strong>Then</strong> submit is allowed and the reason-capture stores that text.</td>
+<td>C-02 · R3b</td>
 <td>Settled</td>
 </tr>
 <tr>
 <td>AC-BV-3</td>
-<td><strong>Given</strong> one reason is already selected (single-select radio list), <strong>When</strong> the CSP taps a second reason, <strong>Then</strong> the first deselects and only the second stays selected — the event can never carry more than one primary reason (C-04).</td>
-<td>R1(MUST NOT) · C-04</td>
+<td><strong>Given</strong> one reason is already selected (single-select radio list), <strong>When</strong> the CSP taps a second reason, <strong>Then</strong> the first deselects and only the second stays selected — the event can never carry more than one primary reason.</td>
+<td>R1(MUST NOT)</td>
 <td>Settled</td>
 </tr>
 </tbody></table>
@@ -737,7 +724,7 @@
 </tr>
 <tr>
 <td>Position bias</td>
-<td>The tendency to pick a reason because of where it sits in the list, not because it is true — the effect randomisation (G2, C-02) removes.</td>
+<td>The tendency to pick a reason because of where it sits in the list, not because it is true — the effect randomisation (G2) removes.</td>
 <td>—</td>
 </tr>
 <tr>
@@ -757,12 +744,12 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>Serve a config-driven reason set at both capture points, randomised per task with &quot;Other&quot; last.</td>
-<td>R1 · R4 · C-01 · C-02 · G2 · G3</td>
+<td>Serve the reason set (copy per C-01) at both capture points, randomised per task with &quot;Other&quot; last.</td>
+<td>R1 · R4 · C-01 · G2 · G3</td>
 </tr>
 <tr>
-<td>Require and store exactly one primary reason per event, plus &quot;Other&quot; free-text.</td>
-<td>R1b · R3 · C-04 · G1</td>
+<td>Require and store exactly one primary reason per event, plus &quot;Other&quot; free-text of at least the C-02 minimum.</td>
+<td>R1b · R3 · C-02 · G1</td>
 </tr>
 <tr>
 <td>Change the reason set — add / remove / reorder-eligibility / edit any reason&#39;s copy — without an app release, effective at both capture points on next render, without touching past records.</td>
@@ -800,6 +787,12 @@
 <td>§7 requires a Failure-window (FAIL) AC type</td>
 <td>No FAIL AC</td>
 <td>Reason capture is <strong>synchronous</strong> — a submission either records or is blocked inline (T3); there is no asynchronous, money, or service window that can fail after the CSP taps submit. The only &quot;unchanged-on-change&quot; promise (past records untouched when config changes) is covered by AC-CFG-1.</td>
+<td>Ashish Raj (PM)</td>
+</tr>
+<tr>
+<td>L8 — every product number is a C-id</td>
+<td>Two fixed V1 behaviours — single-select (exactly one reason) and per-task randomisation — are stated inline, not as C-id parameters</td>
+<td>Configurability is deliberately scoped to two tunable parameters only (reason copy C-01, &quot;Other&quot; minimum C-02); these two behaviours are fixed in V1 and not meant to be changed.</td>
 <td>Ashish Raj (PM)</td>
 </tr>
 </tbody></table>
