@@ -841,6 +841,24 @@
 <td>Each rests on an inferred rule/behaviour above; they test decisions the PM has not yet confirmed.</td>
 </tr>
 </tbody></table>
+<hr>
+<h2>Overrides</h2>
+<table>
+<thead>
+<tr>
+<th>Rule overridden</th>
+<th>What was done instead</th>
+<th>Rationale</th>
+<th>Approved by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>§7 requires a Failure-window (FAIL) AC type</td>
+<td>No FAIL AC</td>
+<td>Reason capture is <strong>synchronous</strong> — a submission either records or is blocked inline (T3); there is no asynchronous, money, or service window that can fail after the CSP taps submit. The only &quot;unchanged-on-change&quot; promise (past records untouched when config changes) is covered by AC-CFG-1.</td>
+<td>Ashish Raj (PM)</td>
+</tr>
+</tbody></table>
 
 </div></div></main>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>

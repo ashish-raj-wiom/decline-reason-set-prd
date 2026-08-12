@@ -272,3 +272,11 @@ What the platform must be able to do for this feature to exist. Whether these ar
 | §5 C-02 | Range "{per task, off}" | PM chose "per task"; the allowed range is inferred. |
 | §5 C-03 | "Other" minimum = non-empty (≥1 char), Fixed in V1 | Min-length rule not specified; non-empty is the minimal safe default. |
 | §7 AC-REC-5, AC-CFG-2, AC-RACE-1, AC-DUP-1, AC-BV-2 | Marked ACs | Each rests on an inferred rule/behaviour above; they test decisions the PM has not yet confirmed. |
+
+---
+
+## Overrides
+
+| Rule overridden | What was done instead | Rationale | Approved by |
+|---|---|---|---|
+| §7 requires a Failure-window (FAIL) AC type | No FAIL AC | Reason capture is **synchronous** — a submission either records or is blocked inline (T3); there is no asynchronous, money, or service window that can fail after the CSP taps submit. The only "unchanged-on-change" promise (past records untouched when config changes) is covered by AC-CFG-1. | Ashish Raj (PM) |
