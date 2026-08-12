@@ -15,6 +15,8 @@
 
 **The reason set (V1).** The CSP-facing copy below (English and Hindi), served identically at both capture points (R4). **The copy is part of this spec** — Product owns it, and it is editable via config (C-01). Sheet header: *"Why can't you take this job? — Telling us the right reason helps us send you better work."*
 
+> ⚑ **Exact copy comes from Figma.** The English and Hindi text below is **indicative**. The exact, final wording — for every reason and the sheet header — **must be picked directly from the Figma file (§4)**, which is the source of truth for all copy.
+
 | Reason (CSP sees) | Hindi | What it means |
 |---|---|---|
 | The cable can't reach this place | इस जगह तार नहीं जा पाता | not serviceable / coverage |
@@ -23,6 +25,8 @@
 | I don't have a device right now | नेटबॉक्स अभी उपलब्ध नहीं है | device / netbox unavailable |
 | No one free to install it | लगाने वाला कोई नहीं है | technician / labour unavailable |
 | Another reason *(free text, always last)* | कोई और वजह | anything else — the CSP types it |
+
+*Indicative copy only — take the exact English/Hindi wording directly from the Figma file (§4).*
 
 **How the set changes (add-only).** The underlying reason list only **grows** — no reason is ever removed from the system. We **add** three reasons — *"I couldn't understand the address"*, *"No one free to install it"*, and the free-text *"Another reason"* — and **reword** the copy of the kept ones. The picker then **shows only the six above** (C-01); any previously-shown reason not in this list stays in the system, just no longer shown to the CSP. Any new reason must also be recognised by the downstream services that read reasons, so they consume it as expected (G5).
 
@@ -102,7 +106,9 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 ### Reason sheet (CSP app) — decline & install-failure
 
-**Header (spec-owned copy, §1):** title *"Why can't you take this job?"*, subtitle *"Telling us the right reason helps us send you better work."*
+**Exact copy comes from Figma.** Every string on this screen — each reason (English + Hindi), the title, the subtitle, the free-text placeholder, the submit label — **must be taken directly from the Figma file above**, which is the source of truth for wording. The copy quoted in this PRD is indicative only.
+
+**Header (indicative copy — final from Figma):** title *"Why can't you take this job?"*, subtitle *"Telling us the right reason helps us send you better work."*
 **States:** default (list shown, none selected) · reason selected · "Another reason" selected (inline text box shown) · submit blocked (no reason, or "Another reason" with empty text)
 **Freshness:** the list reflects the current config (C-01) on open.
 
@@ -130,7 +136,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 | ID | Parameter | Default | Range | Who changes it |
 |---|---|---|---|---|
-| C-01 | Shown-reason set — which reasons appear, **each reason's display copy**, order-eligibility; applied identically to decline and install-failure (governs the sheet, R1a/R4/R5) | The V1 six in §1 | Editable via config — show / hide a reason, reorder-eligibility, **change any reason's copy** — with no app release, effective at both capture points; the underlying list is add-only (reasons added, never removed) | Product |
+| C-01 | Shown-reason set — which reasons appear, **each reason's display copy**, order-eligibility; applied identically to decline and install-failure (governs the sheet, R1a/R4/R5) | The V1 six in §1 — **exact copy from the Figma file (§4)** | Editable via config — show / hide a reason, reorder-eligibility, **change any reason's copy** — with no app release, effective at both capture points; the underlying list is add-only (reasons added, never removed) | Product |
 | C-02 | Reason-order randomisation scope (R1c) | Per task; "Other" pinned last | {per task, off} ⚠️ *AI GENERATED — review* | Product |
 | C-03 | "Other" free-text minimum (R3b) | Non-empty (≥ 1 character) ⚠️ *AI GENERATED — review* | Fixed in V1 ⚠️ *AI GENERATED — review* | Product |
 | C-04 | Max primary reasons per event (R1b) | 1 | Fixed in V1 | Product |
