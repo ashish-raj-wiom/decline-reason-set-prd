@@ -43,7 +43,7 @@
 <div class="topbar">
   <div class="wrap row">
     <span class="eyebrow">CSP Decline Intelligence · Part 1</span>
-    <span class="badge">Draft PRD</span>
+    <span class="badge">Signed off · v1.0</span>
     <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">◑</button>
   </div>
 </div>
@@ -61,11 +61,11 @@
 <tbody><tr>
 <td><strong>Owner</strong> — Ashish Raj (PM)</td>
 <td><strong>Reviewer</strong> — Saurabh Goyal (EM)</td>
-<td><strong>Status</strong> — Draft</td>
-<td><strong>Sign-off</strong> — Pending</td>
+<td><strong>Status</strong> — Signed off</td>
+<td><strong>Sign-off</strong> — Signed off · 11 Aug 2026</td>
 </tr>
 <tr>
-<td><strong>Version</strong> — v0.4 · 11 Aug 2026</td>
+<td><strong>Version</strong> — v1.0 · 11 Aug 2026</td>
 <td></td>
 <td></td>
 <td></td>
@@ -181,7 +181,7 @@
 <tbody><tr>
 <td>M2</td>
 <td>Declines / install-failures recorded with exactly one valid reason</td>
-<td>~100% <em>(today&#39;s list is mandatory single-select)</em> ⚠️ <em>AI GENERATED — review</em></td>
+<td>~100% <em>(today&#39;s list is mandatory single-select)</em></td>
 <td>100%</td>
 <td>MQ-2</td>
 </tr>
@@ -232,7 +232,7 @@
 <td>R6</td>
 <td>As a CSP with no one free to install, I can pick &quot;No one free to install it&quot;, so that supply gap is captured.</td>
 <td>Capture it like any other reason.</td>
-<td>Trigger any availability / pause-installs action in V1 — the Availability-service handoff is out of scope here ⚠️ <em>AI GENERATED — review</em>.</td>
+<td>Trigger any availability / pause-installs action in V1 — the Availability-service handoff is out of scope here.</td>
 </tr>
 <tr>
 <td>R7</td>
@@ -261,7 +261,7 @@
     D -- "Yes" --> T2["T2 — record with Other + free-text"]
     C -- "No" --> T1["T1 — record with the selected reason"]
 </pre>
-<p><strong>Precedence:</strong> the reason set is read when the sheet is <strong>rendered</strong>; a reason valid at render stays valid for that submission even if config hides it before the CSP taps submit (AC-RACE-1 ⚠️ <em>AI GENERATED — review</em>).</p>
+<p><strong>Precedence:</strong> the reason set is read when the sheet is <strong>rendered</strong>; a reason valid at render stays valid for that submission even if config hides it before the CSP taps submit (AC-RACE-1).</p>
 <h3>3b. State transition table — canon</h3>
 <p>Lifecycle of a <strong>reason-capture</strong> (created when a CSP submits a decline or an install-failure report; it attaches the stated reason to that event). The decline / install-failure state machine itself — the ES candidate&#39;s <code>DECLINED</code> and <code>INSTALLATION_REPORTED_FAILED</code> transitions — is out of scope; this spec governs only the reason attached to those events.</p>
 <table>
@@ -305,12 +305,12 @@
 <td>Duplicate submit for the same event (double-tap)</td>
 <td>Event already recorded</td>
 <td>Recorded</td>
-<td>No second reason-capture is created — the first stands (idempotent) ⚠️ <em>AI GENERATED — review</em>.</td>
+<td>No second reason-capture is created — the first stands (idempotent).</td>
 </tr>
 </tbody></table>
 <hr>
 <h2>4. Screen Requirements</h2>
-<p><strong>Experience intent:</strong> the CSP tells us why in one honest tap — the list is short, neutral, and never nudges him toward one answer. ⚠️ <em>AI GENERATED — review</em></p>
+<p><strong>Experience intent:</strong> the CSP tells us why in one honest tap — the list is short, neutral, and never nudges him toward one answer.</p>
 <p><strong>Master design file:</strong> Figma · &quot;PA — Dev → January 2026 Onwards&quot; — <a href="https://www.figma.com/design/W2Z3B5xfFO3UibJSzkyHn2/PA---Dev--%3E-January-2026-Onwards?node-id=10827-3318&t=LsaXp8nSAj726SVt-0">reason sheet frame</a></p>
 <h3>Reason sheet (CSP app) — decline &amp; install-failure</h3>
 <p><strong>Exact copy comes from Figma.</strong> Every string on this screen — each reason (English + Hindi), the title, the subtitle, the free-text placeholder, the submit label — <strong>must be taken directly from the Figma file above</strong>, which is the source of truth for wording. The copy quoted in this PRD is indicative only.</p>
@@ -351,7 +351,7 @@
 <td>precondition: one primary reason, plus non-empty text if &quot;Another reason&quot;</td>
 </tr>
 </tbody></table>
-<h3>Reason-config console (internal) — design TBD ⚠️ <em>AI GENERATED — review</em></h3>
+<h3>Reason-config console (internal)</h3>
 <p><strong>States:</strong> list of reasons (shown / hidden) · edit
 <strong>Freshness:</strong> changes take effect on the next sheet render (R5b)</p>
 <table>
@@ -396,14 +396,14 @@
 <td>C-02</td>
 <td>Reason-order randomisation scope (R1c)</td>
 <td>Per task; &quot;Other&quot; pinned last</td>
-<td>{per task, off} ⚠️ <em>AI GENERATED — review</em></td>
+<td>{per task, off}</td>
 <td>Product</td>
 </tr>
 <tr>
 <td>C-03</td>
 <td>&quot;Other&quot; free-text minimum (R3b)</td>
-<td>Non-empty (≥ 1 character) ⚠️ <em>AI GENERATED — review</em></td>
-<td>Fixed in V1 ⚠️ <em>AI GENERATED — review</em></td>
+<td>Non-empty (≥ 1 character)</td>
+<td>Fixed in V1</td>
 <td>Product</td>
 </tr>
 <tr>
@@ -500,7 +500,7 @@
 <td>AC-REC-5</td>
 <td><strong>Given</strong> the reason sheet, <strong>When</strong> the CSP selects <strong>&quot;No one free to install it&quot;</strong> and submits, <strong>Then</strong> it is recorded with that reason&#39;s stable identifier and reads downstream as <em>technician / labour unavailable</em> — and <strong>no</strong> availability / pause-installs action fires in V1.</td>
 <td>R6 · R8 · T1 · G6</td>
-<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+<td>Settled</td>
 </tr>
 <tr>
 <td>AC-REC-6</td>
@@ -604,7 +604,7 @@
 <td>AC-CFG-2</td>
 <td><strong>Given</strong> Product adds a new reason in config, <strong>When</strong> the sheet next renders, <strong>Then</strong> the new reason appears in the randomised list (before &quot;Another reason&quot;).</td>
 <td>R5a · C-01</td>
-<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+<td>Settled</td>
 </tr>
 <tr>
 <td>AC-CFG-3</td>
@@ -633,7 +633,7 @@
 <td>AC-RACE-1</td>
 <td><strong>Given</strong> a CSP opened the sheet while &quot;I couldn&#39;t understand the address&quot; was active, <strong>When</strong> config hides it before he taps submit and he had selected it, <strong>Then</strong> the submission still records that reason (valid at render), and the next sheet render omits it.</td>
 <td>§3a precedence</td>
-<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+<td>Settled</td>
 </tr>
 </tbody></table>
 <h3>DUP — Duplicate trigger (T4)</h3>
@@ -650,7 +650,7 @@
 <td>AC-DUP-1</td>
 <td><strong>Given</strong> a decline already recorded with &quot;The cable can&#39;t reach this place&quot;, <strong>When</strong> the CSP double-taps submit, <strong>Then</strong> exactly one reason-capture exists for that event.</td>
 <td>T4</td>
-<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+<td>Settled</td>
 </tr>
 </tbody></table>
 <h3>BV — Boundary values (C-03 text length, C-04 single reason)</h3>
@@ -673,7 +673,7 @@
 <td>AC-BV-2</td>
 <td><strong>Given</strong> &quot;Other&quot; selected, <strong>When</strong> the text field has 1 character, <strong>Then</strong> submit is allowed and the reason-capture stores that text.</td>
 <td>C-03 · R3b</td>
-<td>Settled ⚠️ <em>AI GENERATED — review</em></td>
+<td>Settled</td>
 </tr>
 <tr>
 <td>AC-BV-3</td>
@@ -783,57 +783,6 @@
 <tr>
 <td>Carry every completed decline / install-failure downstream so DAS and CL OS act on it as expected.</td>
 <td>R1 · R2 · G5 · MQ-6</td>
-</tr>
-</tbody></table>
-<hr>
-<h2>AI-generated content for review</h2>
-<table>
-<thead>
-<tr>
-<th>Location</th>
-<th>What was generated</th>
-<th>Basis</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>§1 M2 baseline</td>
-<td>&quot;~100% today&quot;</td>
-<td>Inferred: today&#39;s list is mandatory single-select. Confirm the current capture is truly reason-mandatory.</td>
-</tr>
-<tr>
-<td>§2 R6</td>
-<td>&quot;No availability action in V1&quot;</td>
-<td>From the brief (handoff out of scope); the explicit V1 &quot;capture only, no action&quot; behaviour is inferred.</td>
-</tr>
-<tr>
-<td>§3b T4 + AC-DUP-1</td>
-<td>Duplicate-submit is idempotent (one reason-capture)</td>
-<td>Standard safeguard; duplicate-trigger behaviour not specified.</td>
-</tr>
-<tr>
-<td>§3a precedence + AC-RACE-1</td>
-<td>Reason validity is fixed at render</td>
-<td>A rule was needed for config changing mid-session; the chosen resolution is inferred.</td>
-</tr>
-<tr>
-<td>§4</td>
-<td>Reason-config console screen; experience-intent line</td>
-<td>Reason-sheet Figma is linked; the internal config console and the experience-intent wording are still inferred.</td>
-</tr>
-<tr>
-<td>§5 C-02</td>
-<td>Range &quot;{per task, off}&quot;</td>
-<td>PM chose &quot;per task&quot;; the allowed range is inferred.</td>
-</tr>
-<tr>
-<td>§5 C-03</td>
-<td>&quot;Other&quot; minimum = non-empty (≥1 char), Fixed in V1</td>
-<td>Min-length rule not specified; non-empty is the minimal safe default.</td>
-</tr>
-<tr>
-<td>§7 AC-REC-5, AC-CFG-2, AC-RACE-1, AC-DUP-1, AC-BV-2</td>
-<td>Marked ACs</td>
-<td>Each rests on an inferred rule/behaviour above; they test decisions the PM has not yet confirmed.</td>
 </tr>
 </tbody></table>
 <hr>

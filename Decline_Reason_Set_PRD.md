@@ -2,8 +2,8 @@
 
 | | | | |
 |---|---|---|---|
-| **Owner** — Ashish Raj (PM) | **Reviewer** — Saurabh Goyal (EM) | **Status** — Draft | **Sign-off** — Pending |
-| **Version** — v0.4 · 11 Aug 2026 | | | |
+| **Owner** — Ashish Raj (PM) | **Reviewer** — Saurabh Goyal (EM) | **Status** — Signed off | **Sign-off** — Signed off · 11 Aug 2026 |
+| **Version** — v1.0 · 11 Aug 2026 | | | |
 
 ---
 
@@ -45,7 +45,7 @@
 
 | ID | Metric | Baseline | Target | Source |
 |---|---|---|---|---|
-| M2 | Declines / install-failures recorded with exactly one valid reason | ~100% *(today's list is mandatory single-select)* ⚠️ *AI GENERATED — review* | 100% | MQ-2 |
+| M2 | Declines / install-failures recorded with exactly one valid reason | ~100% *(today's list is mandatory single-select)* | 100% | MQ-2 |
 
 **Invariant (not a metric):** G1 reason-less decline/failure = 0, zero tolerance. Monitored via MQ-2, not trended.
 
@@ -60,7 +60,7 @@
 | R3 | As a CSP whose reason isn't in the list, I pick "Other" and type it, so a missing reason still gets captured. | **(a)** Offer "Other", always last. **(b)** Require non-empty free-text (C-03) when "Other" is chosen. **(c)** Store the free-text. | **(a)** Accept "Other" with empty text. **(b)** Show the free-text back to the CSP as anything but his own input. |
 | R4 | As Wiom, I want the decline and install-failure lists to stay identical so the two moments can be read together. | Serve one identical configured reason set (C-01) at both capture points. | Let the two lists diverge. |
 | R5 | As the taxonomy owner, I want to change which reasons are shown — and any reason's copy — without shipping a new app build, so the list can evolve. | **(a)** Keep the shown-reason set — which reasons appear, each reason's display copy, order-eligibility — config-driven (C-01), applied identically at both capture points. **(b)** A reason hidden in config stops appearing on new sheets from that change forward. **(c)** The reason list is add-only — reasons may be added; none is ever removed. | **(a)** Remove an existing reason from the underlying list. **(b)** Alter reasons already recorded on past events. **(c)** Show a hidden reason on a newly opened sheet. |
-| R6 | As a CSP with no one free to install, I can pick "No one free to install it", so that supply gap is captured. | Capture it like any other reason. | Trigger any availability / pause-installs action in V1 — the Availability-service handoff is out of scope here ⚠️ *AI GENERATED — review*. |
+| R6 | As a CSP with no one free to install, I can pick "No one free to install it", so that supply gap is captured. | Capture it like any other reason. | Trigger any availability / pause-installs action in V1 — the Availability-service handoff is out of scope here. |
 | R7 | As Wiom, I want to know exactly what the CSP saw when he chose, so his choice is auditable and position effects are measurable. | Record, per event, the **exact set of reasons shown and their order**, retrievable later. | Record only the chosen reason with no trace of what was shown. |
 | R8 | As analytics / product / Genie / DAS / CL and any downstream team, I want every logged decline / install-failure to carry a stable reason identifier, so I can tell exactly *why* the CSP declined. | **(a)** Record each reason as a **stable identifier** (its values defined by tech) that stays the same even when the display copy changes. **(b)** Map each identifier one-to-one to a single, well-defined "why". | **(a)** Use the (changeable) display copy as the downstream signal. **(b)** Log a reason no downstream team can interpret. |
 
@@ -83,7 +83,7 @@ flowchart TD
     C -- "No" --> T1["T1 — record with the selected reason"]
 ```
 
-**Precedence:** the reason set is read when the sheet is **rendered**; a reason valid at render stays valid for that submission even if config hides it before the CSP taps submit (AC-RACE-1 ⚠️ *AI GENERATED — review*).
+**Precedence:** the reason set is read when the sheet is **rendered**; a reason valid at render stays valid for that submission even if config hides it before the CSP taps submit (AC-RACE-1).
 
 ### 3b. State transition table — canon
 
@@ -94,13 +94,13 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | T1 | — | Submit with a listed reason (not "Other") | Exactly one primary reason selected (R1b) | Recorded | Reason-capture stored: reason + capture point (decline / install-failure); the exact set of reasons shown and their order is recorded (R7, MQ-1, MQ-5). |
 | T2 | — | Submit with "Other" | Free-text non-empty (R3b, C-03) | Recorded | Stored as "Other" + the free-text (R3c); reasons shown + order recorded (R7). |
 | T3 | Sheet shown | Submit | No primary reason selected, **or** "Other" with empty text | Sheet shown | Submission blocked; CSP prompted to pick a reason / add text (R1b, R3b). Nothing is recorded. |
-| T4 | Recorded | Duplicate submit for the same event (double-tap) | Event already recorded | Recorded | No second reason-capture is created — the first stands (idempotent) ⚠️ *AI GENERATED — review*. |
+| T4 | Recorded | Duplicate submit for the same event (double-tap) | Event already recorded | Recorded | No second reason-capture is created — the first stands (idempotent). |
 
 ---
 
 ## 4. Screen Requirements
 
-**Experience intent:** the CSP tells us why in one honest tap — the list is short, neutral, and never nudges him toward one answer. ⚠️ *AI GENERATED — review*
+**Experience intent:** the CSP tells us why in one honest tap — the list is short, neutral, and never nudges him toward one answer.
 
 **Master design file:** Figma · "PA — Dev → January 2026 Onwards" — [reason sheet frame](https://www.figma.com/design/W2Z3B5xfFO3UibJSzkyHn2/PA---Dev--%3E-January-2026-Onwards?node-id=10827-3318&t=LsaXp8nSAj726SVt-0)
 
@@ -120,7 +120,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | Check — free-text | — | required non-empty (C-03) when "Another reason" selected; else submit blocked (R3b, T3) |
 | Action — submit | T1 / T2 via §3a | precondition: one primary reason, plus non-empty text if "Another reason" |
 
-### Reason-config console (internal) — design TBD ⚠️ *AI GENERATED — review*
+### Reason-config console (internal)
 
 **States:** list of reasons (shown / hidden) · edit
 **Freshness:** changes take effect on the next sheet render (R5b)
@@ -137,8 +137,8 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | ID | Parameter | Default | Range | Who changes it |
 |---|---|---|---|---|
 | C-01 | Shown-reason set — which reasons appear, **each reason's display copy**, order-eligibility; applied identically to decline and install-failure (governs the sheet, R1a/R4/R5) | The V1 six in §1 — **exact copy from the Figma file (§4)** | Editable via config — show / hide a reason, reorder-eligibility, **change any reason's copy** — with no app release, effective at both capture points; the underlying list is add-only (reasons added, never removed) | Product |
-| C-02 | Reason-order randomisation scope (R1c) | Per task; "Other" pinned last | {per task, off} ⚠️ *AI GENERATED — review* | Product |
-| C-03 | "Other" free-text minimum (R3b) | Non-empty (≥ 1 character) ⚠️ *AI GENERATED — review* | Fixed in V1 ⚠️ *AI GENERATED — review* | Product |
+| C-02 | Reason-order randomisation scope (R1c) | Per task; "Other" pinned last | {per task, off} | Product |
+| C-03 | "Other" free-text minimum (R3b) | Non-empty (≥ 1 character) | Fixed in V1 | Product |
 | C-04 | Max primary reasons per event (R1b) | 1 | Fixed in V1 | Product |
 
 ---
@@ -167,7 +167,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | AC-REC-2 | **Given** the reason sheet, **When** the CSP selects **"I couldn't understand the address"** and submits, **Then** it is recorded with that reason's stable identifier and reads downstream as *address unclear*. | R1 · R8 · T1 · G6 | Settled |
 | AC-REC-3 | **Given** the reason sheet, **When** the CSP selects **"The customer said no"** and submits, **Then** it is recorded with that reason's stable identifier — a first-class reason, not merged into any other — and reads downstream as *customer declined*. | R1 · R8 · T1 · G6 | Settled |
 | AC-REC-4 | **Given** the reason sheet, **When** the CSP selects **"I don't have a device right now"** and submits, **Then** it is recorded with that reason's stable identifier and reads downstream as *device unavailable*. | R1 · R8 · T1 · G6 | Settled |
-| AC-REC-5 | **Given** the reason sheet, **When** the CSP selects **"No one free to install it"** and submits, **Then** it is recorded with that reason's stable identifier and reads downstream as *technician / labour unavailable* — and **no** availability / pause-installs action fires in V1. | R6 · R8 · T1 · G6 | Settled ⚠️ *AI GENERATED — review* |
+| AC-REC-5 | **Given** the reason sheet, **When** the CSP selects **"No one free to install it"** and submits, **Then** it is recorded with that reason's stable identifier and reads downstream as *technician / labour unavailable* — and **no** availability / pause-installs action fires in V1. | R6 · R8 · T1 · G6 | Settled |
 | AC-REC-6 | **Given** the CSP selects **"Another reason"**, **When** the inline text box appears and he types "gali me ladai ho rahi thi, ja nahi paya" and submits, **Then** it is recorded with the "Another reason" identifier plus his free-text, and reads downstream as *other* with the typed detail. | R3b · R3c · R8 · T2 · G6 | Settled |
 | AC-REC-7 | **Given** a decline sheet that showed, in order, "The cable can't reach this place · I couldn't understand the address · The customer said no · I don't have a device right now · No one free to install it · Another reason", **When** the CSP selects the 3rd item and submits, **Then** the recorded event carries that exact shown list and order alongside the chosen reason, retrievable later. | R7 · T1 · MQ-5 | Settled |
 
@@ -197,7 +197,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-CFG-1 | **Given** Product hides "I couldn't understand the address" from the picker in config, **When** a CSP opens a new reason sheet, **Then** that reason no longer appears — with no app release — the reason still exists in the underlying list, and events that already recorded it are unchanged. | R5a · R5b · R5(MUST NOT) | Settled |
-| AC-CFG-2 | **Given** Product adds a new reason in config, **When** the sheet next renders, **Then** the new reason appears in the randomised list (before "Another reason"). | R5a · C-01 | Settled ⚠️ *AI GENERATED — review* |
+| AC-CFG-2 | **Given** Product adds a new reason in config, **When** the sheet next renders, **Then** the new reason appears in the randomised list (before "Another reason"). | R5a · C-01 | Settled |
 | AC-CFG-3 | **Given** Product changes the copy of "The customer said no" to "कस्टमर ने मना कर दिया" in config, **When** a CSP opens a new reason sheet at either a decline or an install-failure, **Then** the updated copy shows at both — with no app release. | R5a · C-01 | Settled |
 | AC-CFG-4 | **Given** the app shows whatever reason copy (English and Hindi) the backend serves at runtime — no reason copy is baked into the app build — **When** any reason's copy is edited in config at any point in future, **Then** every device shows the new copy on the next sheet open, with no app release and no app update required. | R5a · R5c · C-01 | Settled |
 
@@ -205,20 +205,20 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-RACE-1 | **Given** a CSP opened the sheet while "I couldn't understand the address" was active, **When** config hides it before he taps submit and he had selected it, **Then** the submission still records that reason (valid at render), and the next sheet render omits it. | §3a precedence | Settled ⚠️ *AI GENERATED — review* |
+| AC-RACE-1 | **Given** a CSP opened the sheet while "I couldn't understand the address" was active, **When** config hides it before he taps submit and he had selected it, **Then** the submission still records that reason (valid at render), and the next sheet render omits it. | §3a precedence | Settled |
 
 ### DUP — Duplicate trigger (T4)
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-DUP-1 | **Given** a decline already recorded with "The cable can't reach this place", **When** the CSP double-taps submit, **Then** exactly one reason-capture exists for that event. | T4 | Settled ⚠️ *AI GENERATED — review* |
+| AC-DUP-1 | **Given** a decline already recorded with "The cable can't reach this place", **When** the CSP double-taps submit, **Then** exactly one reason-capture exists for that event. | T4 | Settled |
 
 ### BV — Boundary values (C-03 text length, C-04 single reason)
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-BV-1 | **Given** "Other" selected, **When** the text field has 0 characters, **Then** submit is blocked (C-03 floor). | C-03 · R3b | Settled |
-| AC-BV-2 | **Given** "Other" selected, **When** the text field has 1 character, **Then** submit is allowed and the reason-capture stores that text. | C-03 · R3b | Settled ⚠️ *AI GENERATED — review* |
+| AC-BV-2 | **Given** "Other" selected, **When** the text field has 1 character, **Then** submit is allowed and the reason-capture stores that text. | C-03 · R3b | Settled |
 | AC-BV-3 | **Given** one reason is already selected (single-select radio list), **When** the CSP taps a second reason, **Then** the first deselects and only the second stays selected — the event can never carry more than one primary reason (C-04). | R1(MUST NOT) · C-04 | Settled |
 
 ### REG — Regression (no downstream impact)
@@ -256,21 +256,6 @@ What the platform must be able to do for this feature to exist. Whether these ar
 | Keep the reason contract stable and backward-compatible, so downstream consumers (DAS, Quality, any reader) are unaffected when the set changes. | R2 · G4 · MQ-3 |
 | Attach a stable reason identifier (its values tech-defined) to every logged decline / failure, so downstream teams map it to the "why". | R8 · G6 · MQ-7 |
 | Carry every completed decline / install-failure downstream so DAS and CL OS act on it as expected. | R1 · R2 · G5 · MQ-6 |
-
----
-
-## AI-generated content for review
-
-| Location | What was generated | Basis |
-|---|---|---|
-| §1 M2 baseline | "~100% today" | Inferred: today's list is mandatory single-select. Confirm the current capture is truly reason-mandatory. |
-| §2 R6 | "No availability action in V1" | From the brief (handoff out of scope); the explicit V1 "capture only, no action" behaviour is inferred. |
-| §3b T4 + AC-DUP-1 | Duplicate-submit is idempotent (one reason-capture) | Standard safeguard; duplicate-trigger behaviour not specified. |
-| §3a precedence + AC-RACE-1 | Reason validity is fixed at render | A rule was needed for config changing mid-session; the chosen resolution is inferred. |
-| §4 | Reason-config console screen; experience-intent line | Reason-sheet Figma is linked; the internal config console and the experience-intent wording are still inferred. |
-| §5 C-02 | Range "{per task, off}" | PM chose "per task"; the allowed range is inferred. |
-| §5 C-03 | "Other" minimum = non-empty (≥1 char), Fixed in V1 | Min-length rule not specified; non-empty is the minimal safe default. |
-| §7 AC-REC-5, AC-CFG-2, AC-RACE-1, AC-DUP-1, AC-BV-2 | Marked ACs | Each rests on an inferred rule/behaviour above; they test decisions the PM has not yet confirmed. |
 
 ---
 

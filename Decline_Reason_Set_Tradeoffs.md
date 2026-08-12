@@ -1,0 +1,16 @@
+# Decline & Install-Failure Reason Set — Tradeoffs Register
+
+Companion to `Decline_Reason_Set_PRD.md` (v1.0, signed off 11 Aug 2026). This records the decisions the PM made between presented options — the "why" behind the spec, for later reference. It is **not** part of the PRD.
+
+| # | Decision point | Chosen | Rejected options | Why (PM's stated reason) | Date |
+|---|---|---|---|---|---|
+| 1 | Customer-intent reasons | **No clubbing** — remove "Customer did not agree with the plan price" from the picker; keep "The customer said no" (was "not interested") as its own reason | Club "not interested" + "price" into one "Customer refused" with an optional price sub-tag | Simpler; price objections fold naturally into "the customer said no"; the sub-tag added build/UX cost for little extra signal | 11 Aug 2026 |
+| 2 | Reasons dropped from the picker | Remove **"Network setup is currently not possible"**, **"Customer did not agree with the plan price"**, and **"Installation could not be scheduled"** | Keep them | Redundant / low-value; the approved design set is leaner and clearer for the CSP | 11 Aug 2026 |
+| 3 | Reason parity across the two capture points | **Identical list** at decline (pre-acceptance) and install-failure (post-acceptance) | Give install-failure on-site-specific extra reasons | Simplest, matches today, lets the two moments be read together | 11 Aug 2026 |
+| 4 | Order randomisation | **Once per task**, "Another reason" pinned last | Reshuffle every render; one stable shuffled order per CSP | Removes global position bias without re-jarring the CSP within a single task | 11 Aug 2026 |
+| 5 | Reason list — where it lives | **Config-driven, add-only**; app renders whatever the backend serves at runtime (copy included) | Hard-code the list/copy in the app build | List and copy can evolve with **no app release**; the underlying list only grows (never remove a reason) so history and downstream stay intact | 11 Aug 2026 |
+| 6 | Reason copy — source of truth | **Exact copy comes from Figma**; the PRD copy is indicative | Treat the PRD text as the final copy | Design owns the exact English/Hindi wording; avoids the PRD and design drifting | 11 Aug 2026 |
+| 7 | Reason identifier for downstream | Every reason carries a **stable identifier (values defined by tech)** so analytics / Genie / DAS / CL read the "why"; **no enum values in the PRD** | Put the code/enum values in the PRD; rely on display copy downstream | PRD stays what/why (tech owns the enum); copy changes must not change the downstream signal | 11 Aug 2026 |
+| 8 | Success metrics | **One metric** — M2 (share recorded with exactly one valid reason) | Also track M1 (position-bias-removed) as a top-line metric | Position bias is guaranteed by guardrail G2 + MQ-1; it didn't need to be a headline metric too | 11 Aug 2026 |
+| 9 | Failure-window (FAIL) AC | **None** — recorded as an Override; capture is synchronous | Add a persistence-failure envelope + C-id window | A submission either records or is blocked inline (T3); there is no async / money / service window that can fail after submit | 11 Aug 2026 |
+| 10 | Consulted parties in the header | **None listed** | Name CSP App / Data-Analytics / DAS-Quality domains | PM's call — not needed for this input-layer spec | 11 Aug 2026 |
