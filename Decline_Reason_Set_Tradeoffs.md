@@ -1,6 +1,6 @@
 # Decline & Install-Failure Reason Set — Tradeoffs Register
 
-Companion to `Decline_Reason_Set_PRD.md` (v1.0, signed off 11 Aug 2026). This records the decisions the PM made between presented options — the "why" behind the spec, for later reference. It is **not** part of the PRD.
+Companion to `Decline_Reason_Set_PRD.md` (v1.2, signed off · 14 Aug 2026). This records the decisions the PM made between presented options — the "why" behind the spec, for later reference. It is **not** part of the PRD. Rows 1–10 are the v1.0/v1.1 decisions (11 Aug); rows 11–12 are v1.2 tech-QA rulings (14 Aug).
 
 | # | Decision point | Chosen | Rejected options | Why (PM's stated reason) | Date |
 |---|---|---|---|---|---|
@@ -14,3 +14,5 @@ Companion to `Decline_Reason_Set_PRD.md` (v1.0, signed off 11 Aug 2026). This re
 | 8 | Success metrics | **One metric** — M2 (share recorded with exactly one valid reason) | Also track M1 (position-bias-removed) as a top-line metric | Position bias is guaranteed by guardrail G2 + MQ-1; it didn't need to be a headline metric too | 11 Aug 2026 |
 | 9 | Failure-window (FAIL) AC | **None** — recorded as an Override; capture is synchronous | Add a persistence-failure envelope + C-id window | A submission either records or is blocked inline (T3); there is no async / money / service window that can fail after submit | 11 Aug 2026 |
 | 10 | Consulted parties in the header | **None listed** | Name CSP App / Data-Analytics / DAS-Quality domains | PM's call — not needed for this input-layer spec | 11 Aug 2026 |
+| 11 | Sheet title/subtitle source | **Served in the reason-catalog response** (config C-01), editable with no app release | Hardcoded label keys in the app build | Keeps the whole sheet config-driven (AC-CFG-4) — the header shouldn't be the one string that needs a release to change | 14 Aug 2026 |
+| 12 | Randomisation seed | **Candidate ID** — deterministic per-task order, stable across sheet re-opens | Re-shuffle each render; seed on booking / CSP id | Candidate ID is stable per (CSP, booking) and available client-side at render; satisfies R1c / AC-GRD-1 | 14 Aug 2026 |

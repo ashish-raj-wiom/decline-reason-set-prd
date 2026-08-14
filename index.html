@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Decline &amp; Install-Failure Reason Set — PRD (Draft)</title>
+<title>Decline &amp; Install-Failure Reason Set — PRD</title>
 <style>
   :root{color-scheme:light;--plane:#f5f5f2;--surface:#fffffe;--raise:#fbfbf9;--ink:#16171c;--ink2:#44454c;--muted:#83848b;--line:#e6e5df;--hair:rgba(20,21,26,.09);--accent:#4f46e5;--accent-ink:#4338ca;--accent-wash:rgba(79,70,229,.07);--amber:#b25e00;--amber-bg:rgba(224,140,20,.13);--code:#ecebe6}
   @media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){color-scheme:dark;--plane:#0e0f11;--surface:#191a1d;--raise:#1f2023;--ink:#f1f2f3;--ink2:#c2c6cc;--muted:#8b9096;--line:#2b2c2f;--hair:rgba(255,255,255,.10);--accent:#8b83f0;--accent-ink:#a79ff5;--accent-wash:rgba(120,110,235,.14);--amber:#f0b055;--amber-bg:rgba(224,140,20,.16);--code:#26272a}}
@@ -43,7 +43,7 @@
 <div class="topbar">
   <div class="wrap row">
     <span class="eyebrow">CSP Decline Intelligence · Part 1</span>
-    <span class="badge">Signed off · v1.0</span>
+    <span class="badge">Signed off · v1.2</span>
     <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">◑</button>
   </div>
 </div>
@@ -62,20 +62,23 @@
 <td><strong>Owner</strong> — Ashish Raj (PM)</td>
 <td><strong>Reviewer</strong> — Saurabh Goyal (EM)</td>
 <td><strong>Status</strong> — Signed off</td>
-<td><strong>Sign-off</strong> — Signed off · 11 Aug 2026</td>
+<td><strong>Sign-off</strong> — Signed off · v1.2 · 14 Aug 2026</td>
 </tr>
 <tr>
-<td><strong>Version</strong> — v1.1 · 11 Aug 2026</td>
+<td><strong>Version</strong> — v1.2 · 14 Aug 2026</td>
 <td></td>
 <td></td>
 <td></td>
 </tr>
 </tbody></table>
+<blockquote>
+<p><strong>v1.2 · 14 Aug 2026.</strong> Tech-QA clarification: the <strong>sheet title and subtitle are served in the reason-catalog response</strong> and editable via config (C-01) with no app release — the same as every reason&#39;s copy (C-01 previously named only per-reason copy). No behaviour change. (Confirmed alongside: pre-acceptance decline already exists in backend — <code>DECLINED</code>, not new; randomisation seed = <strong>candidate ID</strong>, an implementation detail.)</p>
+</blockquote>
 <hr>
 <h2>1. Objective &amp; Definition of Success</h2>
 <p><strong>Objective.</strong> A CSP who won&#39;t install a booking picks the real reason from a list built for his situation — complete enough to fit his case, and unbiased in its order — so he chooses <em>consciously</em> instead of guessing, and the reason we capture is the true one.</p>
 <p><strong>Boundary.</strong> This spec governs the <strong>reason picker</strong> — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a <strong>decline</strong> (before he accepts the booking) and an <strong>install-failure report</strong> (any time after acceptance).</p>
-<p><strong>The reason set (V1).</strong> The CSP-facing copy below (English and Hindi), served identically at both capture points (R4). <strong>The copy is part of this spec</strong> — Product owns it, and it is editable via config (C-01). Sheet header: <em>&quot;Why can&#39;t you take this job? — Telling us the right reason helps us send you better work.&quot;</em></p>
+<p><strong>The reason set (V1).</strong> The CSP-facing copy below (English and Hindi), served identically at both capture points (R4). <strong>The copy is part of this spec</strong> — Product owns it; every reason&#39;s copy <strong>and the sheet title/subtitle</strong> are <strong>served in the reason-catalog response</strong> and editable via config (C-01), with no app release. Sheet header: <em>&quot;Why can&#39;t you take this job? — Telling us the right reason helps us send you better work.&quot;</em></p>
 <blockquote>
 <p>⚑ <strong>Exact copy comes from Figma.</strong> The English and Hindi text below is <strong>indicative</strong>. The exact, final wording — for every reason and the sheet header — <strong>must be picked directly from the Figma file (§4)</strong>, which is the source of truth for all copy.</p>
 </blockquote>
@@ -314,7 +317,7 @@
 <p><strong>Master design file:</strong> Figma · &quot;PA — Dev → January 2026 Onwards&quot; — <a href="https://www.figma.com/design/W2Z3B5xfFO3UibJSzkyHn2/PA---Dev--%3E-January-2026-Onwards?node-id=10827-3318&t=LsaXp8nSAj726SVt-0">reason sheet frame</a></p>
 <h3>Reason sheet (CSP app) — decline &amp; install-failure</h3>
 <p><strong>Exact copy comes from Figma.</strong> Every string on this screen — each reason (English + Hindi), the title, the subtitle, the free-text placeholder, the submit label — <strong>must be taken directly from the Figma file above</strong>, which is the source of truth for wording. The copy quoted in this PRD is indicative only.</p>
-<p><strong>Header (indicative copy — final from Figma):</strong> title <em>&quot;Why can&#39;t you take this job?&quot;</em>, subtitle <em>&quot;Telling us the right reason helps us send you better work.&quot;</em>
+<p><strong>Header (indicative copy — final from Figma; served in the reason-catalog response per C-01, not baked into the build):</strong> title <em>&quot;Why can&#39;t you take this job?&quot;</em>, subtitle <em>&quot;Telling us the right reason helps us send you better work.&quot;</em>
 <strong>States:</strong> default (list shown, none selected) · reason selected · &quot;Another reason&quot; selected (inline text box shown) · submit blocked (no reason, or &quot;Another reason&quot; with empty text)
 <strong>Freshness:</strong> the list reflects the current config (C-01) on open.</p>
 <table>
@@ -387,9 +390,9 @@
 </thead>
 <tbody><tr>
 <td>C-01</td>
-<td>Each reason&#39;s <strong>display copy</strong> (English + Hindi); served at runtime, applied identically to decline and install-failure (R3/R5)</td>
+<td>Each reason&#39;s <strong>display copy</strong>, plus the <strong>sheet title and subtitle</strong> (English + Hindi); <strong>served at runtime in the reason-catalog response</strong>, applied identically to decline and install-failure (R3/R5)</td>
 <td>The V1 copy in §1 — <strong>exact copy from the Figma file (§4)</strong></td>
-<td>Editable via config — <strong>change any reason&#39;s copy</strong> — with no app release, effective at both capture points</td>
+<td>Editable via config — <strong>change any reason&#39;s copy, or the title/subtitle</strong> — with no app release, effective at both capture points</td>
 <td>Product</td>
 </tr>
 <tr>
@@ -744,7 +747,7 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>Serve the reason set (copy per C-01) at both capture points, randomised per task with &quot;Other&quot; last.</td>
+<td>Serve the reason set — <strong>including the sheet title and subtitle</strong> — (copy per C-01) at both capture points, randomised per task with &quot;Other&quot; last.</td>
 <td>R1 · R4 · C-01 · G2 · G3</td>
 </tr>
 <tr>

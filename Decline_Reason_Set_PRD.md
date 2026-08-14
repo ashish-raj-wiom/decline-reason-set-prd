@@ -2,8 +2,10 @@
 
 | | | | |
 |---|---|---|---|
-| **Owner** — Ashish Raj (PM) | **Reviewer** — Saurabh Goyal (EM) | **Status** — Signed off | **Sign-off** — Signed off · 11 Aug 2026 |
-| **Version** — v1.1 · 11 Aug 2026 | | | |
+| **Owner** — Ashish Raj (PM) | **Reviewer** — Saurabh Goyal (EM) | **Status** — Signed off | **Sign-off** — Signed off · v1.2 · 14 Aug 2026 |
+| **Version** — v1.2 · 14 Aug 2026 | | | |
+
+> **v1.2 · 14 Aug 2026.** Tech-QA clarification: the **sheet title and subtitle are served in the reason-catalog response** and editable via config (C-01) with no app release — the same as every reason's copy (C-01 previously named only per-reason copy). No behaviour change. (Confirmed alongside: pre-acceptance decline already exists in backend — `DECLINED`, not new; randomisation seed = **candidate ID**, an implementation detail.)
 
 ---
 
@@ -13,7 +15,7 @@
 
 **Boundary.** This spec governs the **reason picker** — the list shown, the selection, and what is stored — at the two moments a CSP declines to install: a **decline** (before he accepts the booking) and an **install-failure report** (any time after acceptance).
 
-**The reason set (V1).** The CSP-facing copy below (English and Hindi), served identically at both capture points (R4). **The copy is part of this spec** — Product owns it, and it is editable via config (C-01). Sheet header: *"Why can't you take this job? — Telling us the right reason helps us send you better work."*
+**The reason set (V1).** The CSP-facing copy below (English and Hindi), served identically at both capture points (R4). **The copy is part of this spec** — Product owns it; every reason's copy **and the sheet title/subtitle** are **served in the reason-catalog response** and editable via config (C-01), with no app release. Sheet header: *"Why can't you take this job? — Telling us the right reason helps us send you better work."*
 
 > ⚑ **Exact copy comes from Figma.** The English and Hindi text below is **indicative**. The exact, final wording — for every reason and the sheet header — **must be picked directly from the Figma file (§4)**, which is the source of truth for all copy.
 
@@ -108,7 +110,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 **Exact copy comes from Figma.** Every string on this screen — each reason (English + Hindi), the title, the subtitle, the free-text placeholder, the submit label — **must be taken directly from the Figma file above**, which is the source of truth for wording. The copy quoted in this PRD is indicative only.
 
-**Header (indicative copy — final from Figma):** title *"Why can't you take this job?"*, subtitle *"Telling us the right reason helps us send you better work."*
+**Header (indicative copy — final from Figma; served in the reason-catalog response per C-01, not baked into the build):** title *"Why can't you take this job?"*, subtitle *"Telling us the right reason helps us send you better work."*
 **States:** default (list shown, none selected) · reason selected · "Another reason" selected (inline text box shown) · submit blocked (no reason, or "Another reason" with empty text)
 **Freshness:** the list reflects the current config (C-01) on open.
 
@@ -136,7 +138,7 @@ Lifecycle of a **reason-capture** (created when a CSP submits a decline or an in
 
 | ID | Parameter | Default | Range | Who changes it |
 |---|---|---|---|---|
-| C-01 | Each reason's **display copy** (English + Hindi); served at runtime, applied identically to decline and install-failure (R3/R5) | The V1 copy in §1 — **exact copy from the Figma file (§4)** | Editable via config — **change any reason's copy** — with no app release, effective at both capture points | Product |
+| C-01 | Each reason's **display copy**, plus the **sheet title and subtitle** (English + Hindi); **served at runtime in the reason-catalog response**, applied identically to decline and install-failure (R3/R5) | The V1 copy in §1 — **exact copy from the Figma file (§4)** | Editable via config — **change any reason's copy, or the title/subtitle** — with no app release, effective at both capture points | Product |
 | C-02 | "Other" free-text **minimum length** (R3b) | **10 characters** | Fixed in V1 | Product |
 
 *Fixed V1 behaviours (not configurable): the picker is single-select — exactly one primary reason (R1b); order is randomised per task with "Other" last (R1c). See the Override at the foot of this document.*
@@ -249,7 +251,7 @@ What the platform must be able to do for this feature to exist. Whether these ar
 
 | Capability | Needed by |
 |---|---|
-| Serve the reason set (copy per C-01) at both capture points, randomised per task with "Other" last. | R1 · R4 · C-01 · G2 · G3 |
+| Serve the reason set — **including the sheet title and subtitle** — (copy per C-01) at both capture points, randomised per task with "Other" last. | R1 · R4 · C-01 · G2 · G3 |
 | Require and store exactly one primary reason per event, plus "Other" free-text of at least the C-02 minimum. | R1b · R3 · C-02 · G1 |
 | Change the reason set — add / remove / reorder-eligibility / edit any reason's copy — without an app release, effective at both capture points on next render, without touching past records. | R5 · C-01 |
 | Record, per event, the exact set of reasons shown and their order — retrievable later. | R7 · MQ-1 · MQ-5 · G2 |
